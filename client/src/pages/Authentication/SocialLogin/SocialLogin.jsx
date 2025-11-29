@@ -1,8 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { toast } from "react-hot-toast";
 import { auth } from "../../../firebase/firebase.init";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import { motion } from "framer-motion";
 
 const SocialLogin = () => {
   const [loading, setLoading] = useState(false);
@@ -23,7 +26,6 @@ const SocialLogin = () => {
         role: "user", // Default role
       };
 
-      // Replace with your actual backend URL
       const serverUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
       await fetch(`${serverUrl}/users/${user.email}`, {
         method: "PUT",
@@ -36,27 +38,27 @@ const SocialLogin = () => {
       navigate("/");
     } catch (error) {
       console.error("Google sign-in failed:", error);
-      alert("Failed to sign in with Google. Please try again.");
+      toast.error("Failed to sign in with Google. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="mt-4">
-      <button
-        onClick={handleGoogleSignIn}
-        disabled={loading}
-        className="btn btn-outline w-full flex items-center justify-center gap-3"
-      >
-        {loading ? (
-          <span className="loading loading-spinner loading-sm"></span>
-        ) : (
-          <FcGoogle size={20} />
-        )}
-        {loading ? "Signing in..." : "Continue with Google"}
-      </button>
-    </div>
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={handleGoogleSignIn}
+      disabled={loading}
+      className="w-full py-3.5 bg-white border-2 border-gray-200 hover:border-[#29AB87] rounded-xl font-semibold text-gray-700 transition-all duration-300 flex items-center justify-center gap-3 shadow-sm hover:shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
+    >
+      {loading ? (
+        <span className="loading loading-spinner loading-sm"></span>
+      ) : (
+        <FcGoogle size={24} />
+      )}
+      {loading ? "Signing in..." : "Continue with Google"}
+    </motion.button>
   );
 };
 

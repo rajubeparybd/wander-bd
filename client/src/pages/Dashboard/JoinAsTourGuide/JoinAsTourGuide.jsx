@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import {
@@ -41,11 +42,11 @@ const JoinAsTourGuide = () => {
         setIsOpen(true);
         reset();
       } else {
-        alert("Something went wrong. Please try again.");
+        toast.error("Something went wrong. Please try again.");
       }
     } catch (error) {
       console.error("Application submission error:", error);
-      alert("Failed to submit application.");
+      toast.error("Failed to submit application.");
     } finally {
       setIsSubmitting(false);
     }

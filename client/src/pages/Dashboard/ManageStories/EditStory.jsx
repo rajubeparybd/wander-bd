@@ -2,6 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 import useAxios from "../../../hooks/useAxios";
 
 const EditStory = () => {
@@ -33,8 +35,16 @@ const EditStory = () => {
     onSuccess: () => queryClient.invalidateQueries(["story", id]),
   });
 
-  const handleRemoveImage = (img) => {
-    if (confirm("Are you sure you want to remove this image?")) {
+  const handleRemoveImage = async (img) => {
+    const result = await Swal.fire({
+      title: "Remove Image?",
+      text: "Are you sure you want to remove this image?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      confirmButtonText: "Yes, remove it",
+    });
+    if (result.isConfirmed) {
       removeImageMutation.mutate(img);
     }
   };
@@ -65,7 +75,7 @@ const EditStory = () => {
       setNewImages((prev) => [...prev, ...urls]);
     } catch (err) {
       console.error(err);
-      alert("One or more uploads failed.");
+      toast.error("One or more uploads failed.");
     } finally {
       setImageUploading(false); // Stop loading
     }
@@ -76,7 +86,7 @@ const EditStory = () => {
     mutationFn: (data) => axios.put(`/stories/${id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries(["story", id]);
-      alert("Story updated!");
+      toast.success("Story updated!");
       navigate("/dashboard/manage-stories");
     },
   });

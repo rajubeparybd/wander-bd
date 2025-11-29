@@ -114,7 +114,7 @@ const TourGuideDashboard = () => {
       >
         <h1 className="text-4xl md:text-5xl font-black mb-2">
           Welcome back,{" "}
-          <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
             {user?.displayName}
           </span>
         </h1>
@@ -130,7 +130,7 @@ const TourGuideDashboard = () => {
         transition={{ duration: 0.5, delay: 0.1 }}
         className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 overflow-hidden"
       >
-        <div className="relative h-32 bg-gradient-to-r from-[#29AB87] to-[#4F46E5]">
+        <div className="relative h-32 bg-linear-to-r from-[#29AB87] to-[#4F46E5]">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full filter blur-3xl" />
           </div>
@@ -146,7 +146,7 @@ const TourGuideDashboard = () => {
                 alt="Profile"
                 className="w-32 h-32 rounded-3xl object-cover border-4 border-white shadow-xl"
               />
-              <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-xl border-4 border-white flex items-center justify-center">
+              <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl border-4 border-white flex items-center justify-center">
                 <FiAward className="text-white text-lg" />
               </div>
             </motion.div>
@@ -154,7 +154,7 @@ const TourGuideDashboard = () => {
               <h2 className="text-3xl font-black mb-1">{user?.displayName}</h2>
               <p className="text-gray-600 mb-1">{user?.email}</p>
               <div className="flex items-center gap-2">
-                <div className="inline-block px-4 py-1 bg-gradient-to-r from-[#29AB87] to-[#06B6D4] text-white rounded-full text-sm font-semibold">
+                <div className="inline-block px-4 py-1 bg-linear-to-r from-[#29AB87] to-[#06B6D4] text-white rounded-full text-sm font-semibold">
                   Certified Tour Guide
                 </div>
                 <div className="flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-semibold">
@@ -168,7 +168,7 @@ const TourGuideDashboard = () => {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsModalOpen(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#29AB87] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                className="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
               >
                 <FiEdit className="w-5 h-5" />
                 Edit Profile
@@ -189,7 +189,7 @@ const TourGuideDashboard = () => {
             whileHover={{ y: -8, scale: 1.02 }}
             className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 p-6 hover:shadow-2xl transition-all"
           >
-            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4 shadow-lg`}>
+            <div className={`w-14 h-14 rounded-2xl bg-linear-to-br ${stat.color} flex items-center justify-center mb-4 shadow-lg`}>
               <stat.icon className="w-7 h-7 text-white" />
             </div>
             <div className="text-3xl font-black mb-1">{stat.value}</div>
@@ -217,7 +217,7 @@ const TourGuideDashboard = () => {
               onClick={action.onClick}
               className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 p-6 text-left hover:shadow-2xl transition-all group"
             >
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+              <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${action.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
                 <action.icon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-lg font-bold mb-1">{action.label}</h3>
@@ -245,7 +245,7 @@ const TourGuideDashboard = () => {
                 transition={{ delay: 1.1 + index * 0.1 }}
                 className="flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-linear-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center">
                   <FiMapPin className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1">
@@ -268,7 +268,7 @@ const TourGuideDashboard = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 1.2 }}
-        className="bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-3xl shadow-xl p-8 text-white"
+        className="bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-3xl shadow-xl p-8 text-white"
       >
         <h2 className="text-2xl font-black mb-6">Performance Insights</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

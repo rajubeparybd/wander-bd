@@ -19,7 +19,7 @@ const StoryCard = ({ story }) => {
       className="group h-full cursor-pointer"
       onClick={handleReadMore}
     >
-      <div className="relative bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden h-full flex flex-col">
+      <div className="relative bg-linear-to-br from-white via-gray-50 to-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden h-full flex flex-col">
         {/* Image Section */}
         <div className="relative h-72 overflow-hidden">
           <motion.img
@@ -30,7 +30,7 @@ const StoryCard = ({ story }) => {
             className="w-full h-full object-cover"
           />
           {/* Enhanced gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-500" />
           
           {/* Share Button Overlay */}
           <FacebookShareButton
@@ -42,7 +42,7 @@ const StoryCard = ({ story }) => {
             <motion.div
               whileHover={{ scale: 1.15, rotate: 10 }}
               whileTap={{ scale: 0.9 }}
-              className="w-12 h-12 bg-white/95 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl hover:bg-gradient-to-br hover:from-[#29AB87] hover:to-[#4F46E5] transition-all duration-300 group/share border border-white/20"
+              className="w-12 h-12 bg-white/95 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl hover:bg-linear-to-br hover:from-[#29AB87] hover:to-[#4F46E5] transition-all duration-300 group/share border border-white/20"
             >
               <FiShare2 className="w-5 h-5 text-gray-800 group-hover/share:text-white transition-colors" />
             </motion.div>
@@ -52,7 +52,7 @@ const StoryCard = ({ story }) => {
           <div className="absolute top-4 left-4">
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="px-4 py-2 bg-gradient-to-r from-[#29AB87] to-[#4F46E5] rounded-full shadow-lg"
+              className="px-4 py-2 bg-linear-to-r from-[#29AB87] to-[#4F46E5] rounded-full shadow-lg"
             >
               <span className="text-white text-xs font-bold tracking-wide">TRAVEL STORY</span>
             </motion.div>
@@ -73,14 +73,14 @@ const StoryCard = ({ story }) => {
           </p>
 
           {/* Divider */}
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-4" />
+          <div className="w-full h-px bg-linear-to-r from-transparent via-gray-200 to-transparent mb-4" />
 
           {/* Footer */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {/* User Avatar */}
               <div className="relative">
-                <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center ring-2 ring-white shadow-lg">
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-linear-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center ring-2 ring-white shadow-lg">
                   {story.user?.image ? (
                     <img
                       src={story.user.image}
@@ -114,7 +114,7 @@ const StoryCard = ({ story }) => {
                 e.stopPropagation();
                 handleReadMore();
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#29AB87] to-[#4F46E5] text-white rounded-full font-bold text-sm cursor-pointer shadow-lg hover:shadow-xl transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white rounded-full font-bold text-sm cursor-pointer shadow-lg hover:shadow-xl transition-all"
             >
               <span>Read</span>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,8 +125,8 @@ const StoryCard = ({ story }) => {
         </div>
 
         {/* Decorative Gradients */}
-        <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-700" />
-        <div className="absolute -top-32 -left-32 w-64 h-64 bg-gradient-to-br from-[#4F46E5] to-[#9333EA] rounded-full blur-3xl opacity-0 group-hover:opacity-15 transition-all duration-700" />
+        <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-700" />
+        <div className="absolute -top-32 -left-32 w-64 h-64 bg-linear-to-br from-[#4F46E5] to-[#9333EA] rounded-full blur-3xl opacity-0 group-hover:opacity-15 transition-all duration-700" />
       </div>
     </motion.div>
   );

@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMemo } from "react";
+import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
@@ -35,15 +37,23 @@ const MyBookings = () => {
   });
 
   const handleCancel = async (bookingId) => {
-    const confirmCancel = confirm("Are you sure you want to cancel this booking?");
-    if (!confirmCancel) return;
+    const result = await Swal.fire({
+      title: "Cancel Booking?",
+      text: "Are you sure you want to cancel this booking?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      confirmButtonText: "Yes, cancel it",
+    });
+    if (!result.isConfirmed) return;
 
     try {
       await axiosSecure.delete(`/bookings/${bookingId}`);
-      alert("Booking cancelled.");
+      Swal.fire("Cancelled!", "Your booking has been cancelled.", "success");
       refetch();
     } catch (error) {
       console.error("Cancel error:", error);
+      Swal.fire("Error", "Failed to cancel booking.", "error");
     }
   };
 
@@ -76,6 +86,11 @@ const MyBookings = () => {
     }
   };
 
+  const { confirmedCount, pendingCount } = useMemo(() => ({
+    confirmedCount: bookings.filter(b => b.status === "Accepted").length,
+    pendingCount: bookings.filter(b => b.status === "Pending").length,
+  }), [bookings]);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -98,7 +113,7 @@ const MyBookings = () => {
       >
         <h1 className="text-4xl md:text-5xl font-black mb-2">
           My{" "}
-          <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
             Bookings
           </span>
         </h1>
@@ -116,7 +131,7 @@ const MyBookings = () => {
           className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 p-6"
         >
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#29AB87] to-[#06B6D4] flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-[#29AB87] to-[#06B6D4] flex items-center justify-center">
               <FiPackage className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -133,12 +148,12 @@ const MyBookings = () => {
           className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 p-6"
         >
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#4F46E5] to-[#9333EA] flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-[#4F46E5] to-[#9333EA] flex items-center justify-center">
               <FiCheckCircle className="w-6 h-6 text-white" />
             </div>
             <div>
               <div className="text-2xl font-black">
-                {bookings.filter(b => b.status === "Accepted").length}
+                {confirmedCount}
               </div>
               <div className="text-sm text-gray-600">Confirmed</div>
             </div>
@@ -152,12 +167,12 @@ const MyBookings = () => {
           className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 p-6"
         >
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#06B6D4] to-[#4F46E5] flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-linear-to-br from-[#06B6D4] to-[#4F46E5] flex items-center justify-center">
               <FiClock className="w-6 h-6 text-white" />
             </div>
             <div>
               <div className="text-2xl font-black">
-                {bookings.filter(b => b.status === "Pending").length}
+                {pendingCount}
               </div>
               <div className="text-sm text-gray-600">Pending</div>
             </div>
@@ -173,7 +188,7 @@ const MyBookings = () => {
           transition={{ duration: 0.5 }}
           className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-gray-200/50 p-16 text-center"
         >
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-linear-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center">
             <FiPackage className="w-12 h-12 text-white" />
           </div>
           <h3 className="text-2xl font-black mb-2">No Bookings Yet</h3>
@@ -184,7 +199,7 @@ const MyBookings = () => {
             <motion.button
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-gradient-to-r from-[#29AB87] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+              className="px-8 py-4 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
             >
               Browse Trips
             </motion.button>
@@ -203,7 +218,7 @@ const MyBookings = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  transition={{ duration: 0.5, delay: Math.min(idx * 0.1, 0.5) }}
                   whileHover={{ y: -4 }}
                   className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-lg border border-gray-200/50 overflow-hidden hover:shadow-2xl transition-all"
                 >
@@ -225,7 +240,7 @@ const MyBookings = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#29AB87] to-[#06B6D4] flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-[#29AB87] to-[#06B6D4] flex items-center justify-center">
                               <FiUser className="w-5 h-5 text-white" />
                             </div>
                             <div>
@@ -235,7 +250,7 @@ const MyBookings = () => {
                           </div>
 
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4F46E5] to-[#9333EA] flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-[#4F46E5] to-[#9333EA] flex items-center justify-center">
                               <FiCalendar className="w-5 h-5 text-white" />
                             </div>
                             <div>
@@ -245,7 +260,7 @@ const MyBookings = () => {
                           </div>
 
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#06B6D4] to-[#4F46E5] flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-[#06B6D4] to-[#4F46E5] flex items-center justify-center">
                               <FiDollarSign className="w-5 h-5 text-white" />
                             </div>
                             <div>
@@ -255,7 +270,7 @@ const MyBookings = () => {
                           </div>
 
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#9333EA] to-[#29AB87] flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-[#9333EA] to-[#29AB87] flex items-center justify-center">
                               <FiMapPin className="w-5 h-5 text-white" />
                             </div>
                             <div>
@@ -273,7 +288,7 @@ const MyBookings = () => {
                             <motion.button
                               whileHover={{ scale: 1.05, y: -2 }}
                               whileTap={{ scale: 0.95 }}
-                              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#29AB87] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-shadow"
                             >
                               <FiCreditCard className="w-5 h-5" />
                               Pay Now
