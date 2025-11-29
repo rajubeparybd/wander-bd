@@ -24,7 +24,7 @@ const DashboardLayout = () => {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-console.log(user);
+
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-linear-to-br from-gray-50 via-white to-gray-50">

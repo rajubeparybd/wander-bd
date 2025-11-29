@@ -16,7 +16,7 @@ const ManageCandidates = () => {
       return res.data;
     },
   });
-  console.log(candidates);
+
 
   const handleAccept = async (candidate) => {
     const confirm = await Swal.fire({
