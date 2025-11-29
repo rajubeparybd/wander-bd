@@ -99,7 +99,7 @@ const PackageDetailsPage = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="relative h-[60vh] overflow-hidden"
+        className="relative h-[60vh]"
       >
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
