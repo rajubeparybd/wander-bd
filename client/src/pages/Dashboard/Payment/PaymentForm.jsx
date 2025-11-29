@@ -165,7 +165,7 @@ const PaymentForm = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl"
               >
-                <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                <FiAlertCircle className="w-5 h-5 text-red-600 shrink-0" />
                 <p className="text-red-700 text-sm">{error}</p>
               </motion.div>
             )}
@@ -177,7 +177,7 @@ const PaymentForm = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-xl"
               >
-                <FiCheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                <FiCheckCircle className="w-5 h-5 text-green-600 shrink-0" />
                 <p className="text-green-700 text-sm font-medium">
                   This booking has already been paid for
                 </p>

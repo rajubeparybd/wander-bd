@@ -142,7 +142,7 @@ const PaymentSuccess = () => {
               className="space-y-4"
             >
               <div className="flex items-center gap-3 p-4 bg-green-50 rounded-xl border border-green-200">
-                <FiCheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
+                <FiCheckCircle className="w-6 h-6 text-green-600 shrink-0" />
                 <div>
                   <p className="font-semibold text-green-900">Payment Status</p>
                   <p className="text-sm text-green-700 capitalize">

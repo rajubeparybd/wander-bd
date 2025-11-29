@@ -92,8 +92,8 @@ const ManageUsers = () => {
         {isLoading ? (
           <p className="p-4">Loading users...</p>
         ) : (
-          <table className="table w-full bg-[#29AB8760]">
-            <thead className="bg-[#29AB8790]">
+          <table className="table w-full">
+            <thead>
               <tr>
                 <th>#</th>
                 <th>Name</th>
@@ -111,7 +111,7 @@ const ManageUsers = () => {
                 </tr>
               ) : (
                 users.map((user, index) => (
-                  <tr key={user._id}>
+                  <tr key={user._id} className="hover:bg-gray-100 transition-colors">
                     <td>{index + 1}</td>
                     <td>{user.name}</td>
                     <td>{user.email}</td>

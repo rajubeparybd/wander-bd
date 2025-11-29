@@ -77,7 +77,7 @@ const PaymentCancel = () => {
               transition={{ delay: 0.7 }}
               className="flex items-start gap-3 p-4 bg-orange-50 border border-orange-200 rounded-xl"
             >
-              <FiAlertCircle className="w-6 h-6 text-orange-600 flex-shrink-0 mt-0.5" />
+              <FiAlertCircle className="w-6 h-6 text-orange-600 shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-orange-900 mb-1">Payment Not Processed</p>
                 <p className="text-sm text-orange-700">

@@ -23,6 +23,8 @@ import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
 import JoinAsTourGuide from "../pages/Dashboard/JoinAsTourGuide/JoinAsTourGuide";
 import MyAssignedTours from "../pages/Dashboard/MyAssignedTours/MyAssignedTours";
 import AddPackage from "../pages/Dashboard/AddPackage/AddPackage";
+import ManagePackages from "../pages/Dashboard/ManagePackages/ManagePackages";
+import ManageBookings from "../pages/Dashboard/ManageBookings/ManageBookings";
 import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
 import ManageCandidates from "../pages/Dashboard/ManageCandidates/ManageCandidates";
 import AddStory from "../pages/Dashboard/AddStory/AddStory";
@@ -106,6 +108,22 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <AddPackage />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-packages",
+        element: (
+          <AdminRoute>
+            <ManagePackages />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-bookings",
+        element: (
+          <AdminRoute>
+            <ManageBookings />
           </AdminRoute>
         ),
       },

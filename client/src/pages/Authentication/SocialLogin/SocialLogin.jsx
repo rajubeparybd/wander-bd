@@ -23,7 +23,7 @@ const SocialLogin = () => {
         name: user.displayName,
         email: user.email,
         photo: user.photoURL,
-        role: "user", // Default role
+        role: "tourist", // Default role
       };
 
       const serverUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";

@@ -59,8 +59,8 @@ const ManageCandidates = () => {
         {isLoading ? (
           <p className="p-4">Loading applications...</p>
         ) : (
-          <table className="table w-full bg-[#29AB8760]">
-            <thead className="bg-[#29AB8790] text-sm">
+          <table className="table w-full">
+            <thead>
               <tr>
                 <th>#</th>
                 <th>Name</th>
@@ -80,7 +80,7 @@ const ManageCandidates = () => {
                 </tr>
               ) : (
                 candidates.map((candidate, idx) => (
-                  <tr key={candidate._id}>
+                  <tr key={candidate._id} className="hover:bg-gray-100 transition-colors">
                     <td>{idx + 1}</td>
                     <td>{candidate.name}</td>
                     <td>{candidate.email}</td>

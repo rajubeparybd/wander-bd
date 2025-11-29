@@ -16,6 +16,7 @@ import {
   FiMenu,
   FiX,
   FiLogOut,
+  FiShoppingCart,
 } from "react-icons/fi";
 import useAuth from "../hooks/useAuth";
 
@@ -33,14 +34,16 @@ console.log(user);
   }
 
   const navLinks = [
-    { to: "/", icon: FiHome, label: "Home", roles: ["admin", "tourGuide", 'user'] },
-    { to: "/dashboard/profile", icon: FiUser, label: "Profile", roles: ["admin", "tourGuide", 'user'] },
-    { to: "/dashboard/add-story", icon: FiPlus, label: "Add Story", roles: ["admin", "tourGuide", 'user'] },
-    { to: "/dashboard/manage-stories", icon: FiEdit, label: "Manage Stories", roles: ["admin", "tourGuide", 'user'] },
-    { to: "/dashboard/my-bookings", icon: FiBriefcase, label: "My Bookings", roles: ['user'] },
-    { to: "/dashboard/join-as-tour-guide", icon: FiUserPlus, label: "Join as Guide", roles: ['user'] },
+    { to: "/", icon: FiHome, label: "Home", roles: ["admin", "tourGuide", 'user', 'tourist'] },
+    { to: "/dashboard/profile", icon: FiUser, label: "Profile", roles: ["admin", "tourGuide", 'user', 'tourist'] },
+    { to: "/dashboard/add-story", icon: FiPlus, label: "Add Story", roles: ["admin", "tourGuide", 'user', 'tourist'] },
+    { to: "/dashboard/manage-stories", icon: FiEdit, label: "Manage Stories", roles: ["admin", "tourGuide", 'user', 'tourist'] },
+    { to: "/dashboard/my-bookings", icon: FiBriefcase, label: "My Bookings", roles: ['user', 'tourist'] },
+    { to: "/dashboard/join-as-tour-guide", icon: FiUserPlus, label: "Join as Guide", roles: ['user', 'tourist'] },
     { to: "/dashboard/my-assigned-tours", icon: FiClipboard, label: "Assigned Tours", roles: ["tourGuide"] },
     { to: "/dashboard/add-package", icon: FiPackage, label: "Add Package", roles: ["admin"] },
+    { to: "/dashboard/manage-packages", icon: FiPackage, label: "Manage Packages", roles: ["admin"] },
+    { to: "/dashboard/manage-bookings", icon: FiShoppingCart, label: "Manage Bookings", roles: ["admin"] },
     { to: "/dashboard/manage-users", icon: FiUsers, label: "Manage Users", roles: ["admin"] },
     { to: "/dashboard/manage-candidates", icon: FiUserPlus, label: "Manage Candidates", roles: ["admin"] },
   ];

@@ -8,11 +8,27 @@ const addOrUpdateUser = async (req, res) => {
         const { usersCollection } = getCollections();
 
         const filter = { email };
-        const options = { upsert: true };
-        const updateDoc = { $set: userData };
+        const existingUser = await usersCollection.findOne(filter);
 
-        const result = await usersCollection.updateOne(filter, updateDoc, options);
-        res.send(result);
+        if (existingUser) {
+            // User exists - only update fields that should be updated, preserve role
+            const updateDoc = {
+                $set: {
+                    name: userData.name,
+                    photo: userData.photo,
+                }
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.send(result);
+        } else {
+            // New user - insert with default role
+            const newUser = {
+                ...userData,
+                role: userData.role || "tourist"
+            };
+            const result = await usersCollection.insertOne(newUser);
+            res.send(result);
+        }
     } catch (error) {
         console.error("Error adding/updating user:", error);
         res.status(500).send({ message: "Server error" });
