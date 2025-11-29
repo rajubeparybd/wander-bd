@@ -43,7 +43,7 @@ const ManageUsers = () => {
       input: "select",
       inputOptions: {
         tourist: "Tourist",
-        guide: "Tour Guide",
+        tourGuide: "Tour Guide",
         admin: "Admin",
       },
       inputValue: user.role,
