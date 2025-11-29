@@ -76,8 +76,9 @@ const DashboardLayout = () => {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="w-80 min-h-screen bg-white/80 backdrop-blur-xl border-r border-gray-200/50 shadow-2xl p-6 fixed lg:sticky top-0 z-50"
+              className="w-80 h-screen bg-white/80 backdrop-blur-xl border-r border-gray-200/50 shadow-2xl fixed top-0 left-0 z-50 overflow-y-auto"
             >
+              <div className="p-6">
               {/* Header */}
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-6">
@@ -169,12 +170,13 @@ const DashboardLayout = () => {
                 <FiLogOut className="w-5 h-5" />
                 <span>Logout</span>
               </motion.button>
+              </div>
             </motion.aside>
           )}
         </AnimatePresence>
 
         {/* Main Content */}
-        <div className="flex-1 min-h-screen">
+        <div className="flex-1 min-h-screen lg:ml-80">
           {/* Mobile Header */}
           <div className="lg:hidden sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 p-4">
             <button

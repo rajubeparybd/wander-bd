@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Select from "react-select";
 import { useQuery } from "@tanstack/react-query";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaEdit } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
@@ -30,6 +30,46 @@ const ManageUsers = () => {
     },
   });
 
+  const handleEdit = async (user) => {
+    const { value: newRole } = await Swal.fire({
+      title: "Update User Role",
+      html: `
+        <div class="text-left">
+          <p class="mb-2"><strong>User:</strong> ${user.name}</p>
+          <p class="mb-4"><strong>Email:</strong> ${user.email}</p>
+          <p class="mb-2"><strong>Current Role:</strong> <span class="capitalize">${user.role}</span></p>
+        </div>
+      `,
+      input: "select",
+      inputOptions: {
+        tourist: "Tourist",
+        guide: "Tour Guide",
+        admin: "Admin",
+      },
+      inputValue: user.role,
+      inputPlaceholder: "Select a role",
+      showCancelButton: true,
+      confirmButtonColor: "#29AB87",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Update Role",
+      inputValidator: (value) => {
+        if (!value) {
+          return "You need to select a role!";
+        }
+      },
+    });
+
+    if (newRole && newRole !== user.role) {
+      try {
+        await axiosSecure.patch(`/users/${user._id}/role`, { role: newRole });
+        Swal.fire("Updated!", "User role has been updated.", "success");
+        refetch();
+      } catch {
+        Swal.fire("Error", "Something went wrong while updating.", "error");
+      }
+    }
+  };
+
   const handleDelete = async (id) => {
     const confirm = await Swal.fire({
       title: "Are you sure?",
@@ -46,8 +86,8 @@ const ManageUsers = () => {
         await axiosSecure.delete(`/users/${id}`);
         Swal.fire("Deleted!", "User has been deleted.", "success");
         refetch();
-      } catch (err) {
-        Swal.fire("Error", "Something went wrong while deleting.", err);
+      } catch {
+        Swal.fire("Error", "Something went wrong while deleting.", "error");
       }
     }
   };
@@ -117,12 +157,22 @@ const ManageUsers = () => {
                     <td>{user.email}</td>
                     <td className="text-center capitalize">{user.role}</td>
                     <td className="text-center">
-                      <button
-                        onClick={() => handleDelete(user._id)}
-                        className="btn btn-sm btn-error"
-                      >
-                        Delete
-                      </button>
+                      <div className="flex gap-2 justify-center">
+                        <button
+                          onClick={() => handleEdit(user)}
+                          className="btn btn-sm btn-info"
+                          title="Edit Role"
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(user._id)}
+                          className="btn btn-sm btn-error"
+                          title="Delete User"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

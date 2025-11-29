@@ -88,9 +88,36 @@ const deleteUser = async (req, res) => {
     }
 };
 
+const updateUserRole = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { role } = req.body;
+        const { usersCollection } = getCollections();
+
+        if (!role || !["tourist", "tourGuide", "admin"].includes(role)) {
+          return res.status(400).send({ message: "Invalid role" });
+        }
+
+        const result = await usersCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { role } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).send({ message: "User not found" });
+        }
+
+        res.send({ message: "User role updated successfully" });
+    } catch (error) {
+        console.error("Error updating user role:", error);
+        res.status(500).send({ message: "Server error" });
+    }
+};
+
 module.exports = {
     addOrUpdateUser,
     getUserByEmail,
     getUsers,
-    deleteUser
+    deleteUser,
+    updateUserRole
 };
