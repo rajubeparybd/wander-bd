@@ -82,7 +82,7 @@ const PlanYourTrip = () => {
         >
           <h2 className="text-6xl md:text-7xl font-black mb-6">
             Plan Your{' '}
-            <span className="bg-gradient-to-r from-[#29AB87] to-[#9333EA] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-[#29AB87] to-[#9333EA] bg-clip-text text-transparent">
               Perfect Trip
             </span>
           </h2>
@@ -94,14 +94,14 @@ const PlanYourTrip = () => {
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden"
+          className="bg-linear-to-br from-gray-50 to-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden"
         >
           {/* Step Progress */}
           <div className="bg-white px-8 py-6 border-b border-gray-100">
             <div className="flex justify-between items-center mb-4 relative">
               <div className="absolute top-6 left-0 right-0 h-1 bg-gray-100 rounded-full" />
               <motion.div
-                className="absolute top-6 left-0 h-1 bg-gradient-to-r from-[#29AB87] to-[#4F46E5] rounded-full"
+                className="absolute top-6 left-0 h-1 bg-linear-to-r from-[#29AB87] to-[#4F46E5] rounded-full"
                 initial={{ width: "0%" }}
                 animate={{ width: `${((step - 1) / 4) * 100}%` }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -113,7 +113,7 @@ const PlanYourTrip = () => {
                   onClick={() => setStep(s)}
                   className={`relative z-10 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer font-bold transition-all shadow-lg ${
                     step >= s
-                      ? "bg-gradient-to-br from-[#29AB87] to-[#4F46E5] text-white"
+                      ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white"
                       : "bg-white text-gray-400 border-2 border-gray-200"
                   }`}
                   whileHover={{ scale: 1.15 }}
@@ -146,7 +146,7 @@ const PlanYourTrip = () => {
                 {step === 1 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
                         <FiMapPin className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="text-3xl font-bold">Where do you want to go?</h3>
@@ -161,7 +161,7 @@ const PlanYourTrip = () => {
                           onClick={() => handleDestinationSelect(dest)}
                           className={`p-6 rounded-2xl font-semibold transition-all border-2 ${
                             formData.destination === dest.name
-                              ? "bg-gradient-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
+                              ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
                               : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
                           }`}
                         >
@@ -176,7 +176,7 @@ const PlanYourTrip = () => {
                 {step === 2 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
                         <FiClock className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="text-3xl font-bold">How long is your trip?</h3>
@@ -191,7 +191,7 @@ const PlanYourTrip = () => {
                           onClick={() => handleDurationSelect(dur)}
                           className={`p-6 rounded-2xl font-semibold transition-all border-2 ${
                             formData.duration === dur.value
-                              ? "bg-gradient-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
+                              ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
                               : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
                           }`}
                         >
@@ -206,7 +206,7 @@ const PlanYourTrip = () => {
                 {step === 3 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
                         <FiHeart className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="text-3xl font-bold">What type of experience?</h3>
@@ -221,7 +221,7 @@ const PlanYourTrip = () => {
                           onClick={() => handleTypeSelect(type)}
                           className={`p-6 rounded-2xl font-semibold transition-all border-2 ${
                             formData.travelType === type.name
-                              ? "bg-gradient-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
+                              ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
                               : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
                           }`}
                         >
@@ -239,7 +239,7 @@ const PlanYourTrip = () => {
                 {step === 4 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
                         <FiDollarSign className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="text-3xl font-bold">What's your budget?</h3>
@@ -264,7 +264,7 @@ const PlanYourTrip = () => {
                         <span>$1000</span>
                       </div>
                       <div className="text-center mt-8">
-                        <div className="text-5xl font-black bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+                        <div className="text-5xl font-black bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                           ${formData.budget}
                         </div>
                         <div className="text-gray-500 mt-2">per person</div>
@@ -276,7 +276,7 @@ const PlanYourTrip = () => {
                 {step === 5 && (
                   <div>
                     <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
                         <FiCheck className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="text-3xl font-bold">Perfect Matches for You</h3>
@@ -308,7 +308,7 @@ const PlanYourTrip = () => {
                                 </div>
                               </div>
                               <div className="text-right">
-                                <div className="text-3xl font-black bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+                                <div className="text-3xl font-black bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                                   ${pkg.price}
                                 </div>
                                 <div className="text-xs text-gray-500 mt-1">per person</div>
@@ -348,7 +348,7 @@ const PlanYourTrip = () => {
                   (step === 2 && !formData.duration) ||
                   (step === 3 && !formData.travelType)
                 }
-                className="ml-auto px-8 py-3 bg-gradient-to-r from-[#29AB87] to-[#4F46E5] text-white rounded-full font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-shadow"
+                className="ml-auto px-8 py-3 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white rounded-full font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-shadow"
               >
                 Continue →
               </motion.button>

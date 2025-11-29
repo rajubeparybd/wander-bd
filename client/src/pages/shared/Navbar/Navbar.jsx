@@ -60,7 +60,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <NavLink to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
               <FiCompass className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-black">

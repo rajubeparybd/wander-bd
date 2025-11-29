@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { motion } from 'framer-motion';
 import { FiMap, FiUsers, FiCamera, FiCompass, FiShield, FiStar, FiHeadphones, FiTrendingUp } from 'react-icons/fi';
 
@@ -42,7 +43,7 @@ const Overview = () => {
   ];
 
   return (
-    <section className="py-32 px-4 md:px-8 lg:px-16 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-32 px-4 md:px-8 lg:px-16 bg-linear-to-b from-gray-50 to-white">
       <div className="w-full">
         {/* Section Header */}
         <motion.div
@@ -53,7 +54,7 @@ const Overview = () => {
         >
           <h2 className="text-6xl md:text-7xl font-black mb-6">
             Why Choose{' '}
-            <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
               Wander BD
             </span>
           </h2>
@@ -79,7 +80,7 @@ const Overview = () => {
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
-                  className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 shadow-lg`}
+                  className={`w-16 h-16 rounded-2xl bg-linear-to-br ${feature.color} flex items-center justify-center mb-6 shadow-lg`}
                 >
                   <feature.icon className="w-8 h-8 text-white" />
                 </motion.div>

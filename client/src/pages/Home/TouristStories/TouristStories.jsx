@@ -40,7 +40,7 @@ const TouristStories = () => {
         >
           <h2 className="text-6xl md:text-7xl font-black mb-6">
             Traveler{' '}
-            <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
               Stories
             </span>
           </h2>
@@ -70,7 +70,7 @@ const TouristStories = () => {
                     alt={story.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
 
                   {/* Share Button Overlay */}
                   {user && (
@@ -124,7 +124,7 @@ const TouristStories = () => {
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/community")}
-            className="px-10 py-4 bg-gradient-to-r from-[#29AB87] to-[#4F46E5] text-white font-bold rounded-full text-lg shadow-lg hover:shadow-xl transition-shadow"
+            className="px-10 py-4 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white font-bold rounded-full text-lg shadow-lg hover:shadow-xl transition-shadow"
           >
             View All Stories →
           </motion.button>

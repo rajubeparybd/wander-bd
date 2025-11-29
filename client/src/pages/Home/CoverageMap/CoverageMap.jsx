@@ -44,7 +44,7 @@ const CoverageMap = () => {
   };
 
   return (
-    <section className="py-32 px-4 md:px-8 lg:px-16 bg-gradient-to-b from-white to-gray-50">
+    <section className="py-32 px-4 md:px-8 lg:px-16 bg-linear-to-b from-white to-gray-50">
       <div className="w-full">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -54,7 +54,7 @@ const CoverageMap = () => {
         >
           <h2 className="text-6xl md:text-7xl font-black mb-6">
             We're{' '}
-            <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
               Everywhere
             </span>
           </h2>

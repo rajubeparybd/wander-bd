@@ -20,7 +20,7 @@ const StoryCard = ({ story }) => {
             alt={story.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
           
           {/* Share Button Overlay */}
           <FacebookShareButton
@@ -58,7 +58,7 @@ const StoryCard = ({ story }) => {
           {/* Footer */}
           <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-linear-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center">
                 {story.user?.image ? (
                   <img
                     src={story.user.image}
@@ -91,7 +91,7 @@ const StoryCard = ({ story }) => {
         </div>
 
         {/* Decorative Gradient */}
-        <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
+        <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
       </div>
     </motion.div>
   );

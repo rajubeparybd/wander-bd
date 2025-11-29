@@ -81,7 +81,7 @@ const AboutUs = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-linear-to-b from-gray-50 via-white to-gray-50">
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -107,7 +107,7 @@ const AboutUs = () => {
 
             <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight">
               About{' '}
-              <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                 Wander BD
               </span>
             </h1>
@@ -131,7 +131,7 @@ const AboutUs = () => {
             >
               <h2 className="text-5xl md:text-6xl font-black mb-6">
                 Our{' '}
-                <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                   Mission
                 </span>
               </h2>
@@ -165,7 +165,7 @@ const AboutUs = () => {
                   alt="Bangladesh landscape"
                   className="w-full h-[500px] object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
               </div>
               <div className="absolute -bottom-8 -left-8 bg-white rounded-2xl shadow-2xl p-6 max-w-[250px]">
                 <div className="text-4xl font-black text-[#29AB87] mb-2">10,000+</div>
@@ -177,7 +177,7 @@ const AboutUs = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-[#29AB87] to-[#4F46E5]">
+      <section className="py-20 px-4 bg-linear-to-r from-[#29AB87] to-[#4F46E5]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -208,7 +208,7 @@ const AboutUs = () => {
           >
             <h2 className="text-5xl md:text-6xl font-black mb-6">
               Why Choose{' '}
-              <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                 Us
               </span>
             </h2>
@@ -232,7 +232,7 @@ const AboutUs = () => {
                   <motion.div
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.6 }}
-                    className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 shadow-lg`}
+                    className={`w-16 h-16 rounded-2xl bg-linear-to-br ${feature.color} flex items-center justify-center mb-6 shadow-lg`}
                   >
                     <feature.icon className="w-8 h-8 text-white" />
                   </motion.div>
@@ -256,7 +256,7 @@ const AboutUs = () => {
           >
             <h2 className="text-5xl md:text-6xl font-black mb-6">
               Our{' '}
-              <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                 Values
               </span>
             </h2>
@@ -277,7 +277,7 @@ const AboutUs = () => {
                 className="text-center"
               >
                 <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all border border-gray-100 h-full">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-2xl flex items-center justify-center mx-auto mb-6">
                     <value.icon className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="text-xl font-bold mb-3">{value.title}</h3>
@@ -300,7 +300,7 @@ const AboutUs = () => {
           >
             <h2 className="text-5xl md:text-6xl font-black mb-6">
               Meet Our{' '}
-              <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                 Team
               </span>
             </h2>
@@ -329,7 +329,7 @@ const AboutUs = () => {
                       alt={member.name}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                   </div>
                   <div className="p-6">
                     <h3 className="text-2xl font-bold mb-1">{member.name}</h3>
@@ -344,7 +344,7 @@ const AboutUs = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-[#29AB87] to-[#4F46E5]">
+      <section className="py-20 px-4 bg-linear-to-r from-[#29AB87] to-[#4F46E5]">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

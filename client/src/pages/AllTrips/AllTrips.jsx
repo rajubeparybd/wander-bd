@@ -58,7 +58,7 @@ const AllTrips = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-gray-50 to-white">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#29AB87] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-600 font-semibold">Loading amazing trips...</p>
@@ -69,7 +69,7 @@ const AllTrips = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-white px-4">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-gray-50 to-white px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -86,7 +86,7 @@ const AllTrips = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-linear-to-b from-gray-50 via-white to-gray-50">
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 overflow-x-hidden">
         <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -112,7 +112,7 @@ const AllTrips = () => {
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight">
               All{' '}
-              <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                 Trips
               </span>
             </h1>
@@ -171,7 +171,7 @@ const AllTrips = () => {
                 whileHover={{ y: -5 }}
                 className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
               >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4`}>
+                <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${stat.color} flex items-center justify-center mb-4`}>
                   <stat.icon className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-3xl font-black mb-1">{stat.value}</div>
@@ -226,7 +226,7 @@ const AllTrips = () => {
                   >
                     <div className="bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 overflow-hidden h-full flex flex-col relative">
                       {/* Image */}
-                      <div className="relative h-64 overflow-hidden flex-shrink-0">
+                      <div className="relative h-64 overflow-hidden shrink-0">
                         <motion.img
                           whileHover={{ scale: 1.1 }}
                           transition={{ duration: 0.6 }}
@@ -234,7 +234,7 @@ const AllTrips = () => {
                           alt={pkg.title}
                           className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
 
                         {/* Category Badge */}
                         {pkg.tourType && (
@@ -264,11 +264,11 @@ const AllTrips = () => {
 
                         <div className="space-y-2 mb-4 flex-grow">
                           <div className="flex items-center gap-2 text-gray-600">
-                            <FiMapPin className="w-4 h-4 text-[#29AB87] flex-shrink-0" />
+                            <FiMapPin className="w-4 h-4 text-[#29AB87] shrink-0" />
                             <span className="text-sm truncate">{pkg.location || 'Bangladesh'}</span>
                           </div>
                           <div className="flex items-center gap-2 text-gray-600">
-                            <FiClock className="w-4 h-4 text-[#4F46E5] flex-shrink-0" />
+                            <FiClock className="w-4 h-4 text-[#4F46E5] shrink-0" />
                             <span className="text-sm">
                               {typeof pkg.duration === 'number' ? `${pkg.duration} Days` : pkg.duration}
                             </span>
@@ -279,7 +279,7 @@ const AllTrips = () => {
                         <Link to={`/package/${pkg._id}`} className="mt-auto">
                           <motion.button
                             whileHover={{ x: 5 }}
-                            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-black text-white font-bold rounded-full group-hover:bg-gradient-to-r group-hover:from-[#29AB87] group-hover:to-[#4F46E5] transition-all"
+                            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-black text-white font-bold rounded-full group-hover:bg-linear-to-r group-hover:from-[#29AB87] group-hover:to-[#4F46E5] transition-all"
                           >
                             View Details
                             <FiArrowRight className="group-hover:translate-x-1 transition-transform" />

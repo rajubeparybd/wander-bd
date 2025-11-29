@@ -74,19 +74,19 @@ const Footer = () => {
             <h3 className="text-lg font-bold mb-6">Contact Us</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-gray-400">
-                <FiMapPin className="w-5 h-5 text-[#29AB87] mt-0.5 flex-shrink-0" />
+                <FiMapPin className="w-5 h-5 text-[#29AB87] mt-0.5 shrink-0" />
                 <span className="text-sm">Dhaka, Bangladesh<br />Gulshan Avenue, 1212</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400">
-                <FiPhone className="w-5 h-5 text-[#29AB87] flex-shrink-0" />
+                <FiPhone className="w-5 h-5 text-[#29AB87] shrink-0" />
                 <span className="text-sm">+880 1234-567890</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400">
-                <FiMail className="w-5 h-5 text-[#29AB87] flex-shrink-0" />
+                <FiMail className="w-5 h-5 text-[#29AB87] shrink-0" />
                 <span className="text-sm">info@wanderbd.com</span>
               </li>
               <li className="flex items-start gap-3 text-gray-400">
-                <FiClock className="w-5 h-5 text-[#29AB87] mt-0.5 flex-shrink-0" />
+                <FiClock className="w-5 h-5 text-[#29AB87] mt-0.5 shrink-0" />
                 <span className="text-sm">Mon - Sat: 9AM - 8PM<br />Sunday: 10AM - 6PM</span>
               </li>
             </ul>

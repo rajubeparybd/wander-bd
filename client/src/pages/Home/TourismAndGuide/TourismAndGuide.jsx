@@ -88,7 +88,7 @@ const TourismAndGuide = () => {
   const randomGuides = getRandomItems(guides, 6);
 
   return (
-    <section className="py-32 px-4 md:px-8 lg:px-16 bg-gradient-to-b from-white to-gray-50">
+    <section className="py-32 px-4 md:px-8 lg:px-16 bg-linear-to-b from-white to-gray-50">
       <div className="w-full">
         {/* Header */}
         <motion.div
@@ -98,11 +98,11 @@ const TourismAndGuide = () => {
           className="text-center mb-20"
         >
           <h2 className="text-6xl md:text-7xl font-black mb-6">
-            <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
               Explore
             </span>{' '}
             &{' '}
-            <span className="bg-gradient-to-r from-[#4F46E5] to-[#9333EA] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-[#4F46E5] to-[#9333EA] bg-clip-text text-transparent">
               Discover
             </span>
           </h2>
@@ -156,7 +156,7 @@ const TourismAndGuide = () => {
                           alt={pkg.name}
                           className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
 
                         {/* Price Tag */}
                         <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full">
@@ -187,7 +187,7 @@ const TourismAndGuide = () => {
                       </div>
 
                       {/* Decorative gradient */}
-                      <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                      <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
                     </div>
                   </TiltCard>
                 </motion.div>
@@ -221,7 +221,7 @@ const TourismAndGuide = () => {
                           alt={guide.name}
                           className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                       </div>
 
                       <div className="p-6">
@@ -243,7 +243,7 @@ const TourismAndGuide = () => {
                         </Link>
                       </div>
 
-                      <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-[#4F46E5] to-[#9333EA] rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                      <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-linear-to-br from-[#4F46E5] to-[#9333EA] rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
                     </div>
                   </TiltCard>
                 </motion.div>

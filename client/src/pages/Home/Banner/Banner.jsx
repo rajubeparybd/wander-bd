@@ -4,9 +4,9 @@ import { FiStar, FiMapPin, FiUsers, FiAward, FiCompass } from 'react-icons/fi';
 
 const Banner = () => {
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-[#29AB87]/5 via-[#4F46E5]/5 to-[#06B6D4]/5 pt-28 pb-20 overflow-hidden">
+    <section className="relative min-h-screen bg-linear-to-br from-[#29AB87]/5 via-[#4F46E5]/5 to-[#06B6D4]/5 pt-28 pb-20 overflow-hidden">
       {/* Background Gradient Overlay - Full Width */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#29AB87]/10 via-transparent to-[#4F46E5]/10" />
+      <div className="absolute inset-0 bg-linear-to-br from-[#29AB87]/10 via-transparent to-[#4F46E5]/10" />
       
       {/* Background Decoration - Full Width */}
       <div className="absolute inset-0 opacity-20">
@@ -40,7 +40,7 @@ const Banner = () => {
               className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight"
             >
               Discover{' '}
-              <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                 Bangladesh
               </span>
               <br />
@@ -114,7 +114,7 @@ const Banner = () => {
               className="absolute -top-12 left-0 bg-white rounded-2xl shadow-2xl p-4 z-20"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#29AB87] to-[#06B6D4] rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#06B6D4] rounded-xl flex items-center justify-center shrink-0">
                   <FiCompass className="w-7 h-7 text-white" />
                 </div>
                 <div>
@@ -131,7 +131,7 @@ const Banner = () => {
               className="absolute -top-8 -right-8 bg-white rounded-2xl shadow-2xl p-4 z-20"
             >
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-[#4F46E5] to-[#9333EA] rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-linear-to-br from-[#4F46E5] to-[#9333EA] rounded-xl flex items-center justify-center">
                   <FiStar className="w-5 h-5 text-white fill-white" />
                 </div>
                 <div>
@@ -152,7 +152,7 @@ const Banner = () => {
                 alt="Bangladesh Travel"
                 className="w-full h-[600px] object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
             </div>
 
             {/* Floating Testimonial Card 1 - Left Side (Overlapping) */}
@@ -162,7 +162,7 @@ const Banner = () => {
               className="absolute top-24 -left-12 bg-white rounded-2xl shadow-2xl p-4 max-w-[200px] z-20"
             >
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-[#29AB87] to-[#06B6D4] rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-linear-to-br from-[#29AB87] to-[#06B6D4] rounded-full flex items-center justify-center shrink-0">
                   <FiUsers className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -184,7 +184,7 @@ const Banner = () => {
               className="absolute top-1/3 -right-12 bg-white rounded-2xl shadow-2xl p-4 z-20"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
                   <FiAward className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -217,7 +217,7 @@ const Banner = () => {
               className="absolute -bottom-12 right-0 bg-white rounded-2xl shadow-2xl p-4 max-w-[200px] z-20"
             >
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-[#4F46E5] to-[#9333EA] rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-linear-to-br from-[#4F46E5] to-[#9333EA] rounded-full flex items-center justify-center shrink-0">
                   <FiUsers className="w-5 h-5 text-white" />
                 </div>
                 <div>

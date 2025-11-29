@@ -23,7 +23,7 @@ const Community = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 overflow-x-hidden">
+    <div className="min-h-screen bg-linear-to-b from-gray-50 via-white to-gray-50 overflow-x-hidden">
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 overflow-x-hidden">
         {/* Background Decoration */}
@@ -50,7 +50,7 @@ const Community = () => {
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight">
               Community{' '}
-              <span className="bg-gradient-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
                 Stories
               </span>
             </h1>
@@ -76,7 +76,7 @@ const Community = () => {
                 whileHover={{ y: -5 }}
                 className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100"
               >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4`}>
+                <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${stat.color} flex items-center justify-center mb-4`}>
                   <stat.icon className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-3xl font-black mb-1">{stat.value}</div>
