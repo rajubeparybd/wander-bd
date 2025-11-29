@@ -20,16 +20,17 @@ const destinationIcons = {
   "khulna": "🌊",
 };
 
-// Icon mapping for tour types
+// Icon mapping for tour types/categories
 const tourTypeIcons = {
   "adventure": { icon: "🧗", description: "Thrilling experiences" },
-  "relaxing": { icon: "🧘", description: "Peace and tranquility" },
+  "beach": { icon: "🏖️", description: "Coastal paradise" },
   "cultural": { icon: "🎭", description: "Heritage & traditions" },
+  "mountain": { icon: "⛰️", description: "Peak adventures" },
+  "historical": { icon: "🏛️", description: "Ancient wonders" },
+  "wildlife": { icon: "🦁", description: "Nature & animals" },
+  "relaxing": { icon: "🧘", description: "Peace and tranquility" },
   "family": { icon: "👨‍👩‍👧‍👦", description: "Fun for all ages" },
   "romantic": { icon: "💕", description: "Couples getaway" },
-  "wildlife": { icon: "🦁", description: "Nature & animals" },
-  "beach": { icon: "🏖️", description: "Coastal paradise" },
-  "historical": { icon: "🏛️", description: "Ancient wonders" },
   "nature": { icon: "🌿", description: "Natural beauty" },
 };
 
@@ -76,28 +77,46 @@ const PlanYourTrip = () => {
     });
   }, [packages]);
 
-  // Extract unique durations from packages
+  // Extract unique durations from packages (distinct values only)
   const durations = useMemo(() => {
-    const uniqueDurations = [...new Set(packages.map(pkg => pkg.duration).filter(Boolean))];
+    // Get all durations and convert to days
     const durationMap = new Map();
     
-    uniqueDurations.forEach(duration => {
-      const durationDays = parseDurationToDays(duration);
-      if (!durationMap.has(durationDays)) {
+    packages.forEach(pkg => {
+      if (!pkg.duration) return;
+      
+      // Handle both string and number durations
+      let durationDays;
+      if (typeof pkg.duration === 'number') {
+        durationDays = pkg.duration;
+      } else {
+        durationDays = parseDurationToDays(pkg.duration);
+      }
+      
+      if (durationDays > 0 && !durationMap.has(durationDays)) {
+        // Create label based on days
+        const label = durationDays === 1 ? "1 day" : `${durationDays} days`;
         durationMap.set(durationDays, {
-          label: duration,
+          label: label,
           value: durationDays,
           icon: durationDays <= 3 ? "⚡" : durationDays <= 5 ? "📅" : durationDays <= 7 ? "🌟" : "🎒"
         });
       }
     });
     
+    // Sort by duration value
     return Array.from(durationMap.values()).sort((a, b) => a.value - b.value);
   }, [packages]);
 
-  // Extract unique travel types from packages
+  // Extract unique travel types/categories from packages (distinct values only)
   const travelTypes = useMemo(() => {
-    const uniqueTypes = [...new Set(packages.map(pkg => pkg.tourType).filter(Boolean))];
+    // Use category field instead of tourType, get distinct values
+    const uniqueTypes = [...new Set(
+      packages
+        .map(pkg => pkg.category || pkg.tourType) // Use category, fallback to tourType
+        .filter(Boolean)
+    )];
+    
     return uniqueTypes.map(type => {
       const lowerType = type.toLowerCase();
       const typeInfo = tourTypeIcons[lowerType] || { icon: "🎯", description: "Unique experience" };
@@ -130,16 +149,22 @@ const PlanYourTrip = () => {
 
   // Filter packages based on user preferences
   const filteredPackages = packages.filter((pkg) => {
-    const pkgDurationDays = parseDurationToDays(pkg.duration);
+    // Handle both string and number durations
+    let pkgDurationDays;
+    if (typeof pkg.duration === 'number') {
+      pkgDurationDays = pkg.duration;
+    } else {
+      pkgDurationDays = parseDurationToDays(pkg.duration);
+    }
     
     // Exact match for destination
     const destinationMatch = formData.destination 
       ? pkg.location === formData.destination 
       : true;
     
-    // Exact match for tour type
+    // Exact match for category/tour type
     const typeMatch = formData.travelType 
-      ? pkg.tourType === formData.travelType 
+      ? (pkg.category === formData.travelType || pkg.tourType === formData.travelType)
       : true;
     
     // Duration match - package duration should be less than or equal to selected duration

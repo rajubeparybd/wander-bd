@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 import useStories from "../../../hooks/useStories";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import {
   FiEdit,
   FiTrash2,
@@ -11,29 +13,32 @@ import {
   FiImage,
   FiBookOpen,
   FiEye,
-  FiMoreVertical,
 } from "react-icons/fi";
 
 const ManageStories = () => {
   const { stories, isLoading, refetch } = useStories();
+  const axiosSecure = useAxiosSecure();
   const [deletingId, setDeletingId] = useState(null);
-  const [expandedStory, setExpandedStory] = useState(null);
 
   const handleDelete = async (id) => {
-    const confirmDelete = confirm("Are you sure you want to delete this story?");
-    if (!confirmDelete) return;
+    const result = await Swal.fire({
+      title: "Delete Story?",
+      text: "Are you sure you want to delete this story?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      confirmButtonText: "Yes, delete it",
+    });
+    if (!result.isConfirmed) return;
 
     setDeletingId(id);
     try {
-      const serverUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const res = await fetch(`${serverUrl}/stories/${id}`, {
-        method: "DELETE",
-      });
-
-      const result = await res.json();
-      if (result.deletedCount > 0) {
+      const res = await axiosSecure.delete(`/stories/${id}`);
+      if (res.data.deletedCount > 0) {
         toast.success("Story deleted successfully!");
         refetch();
+      } else {
+        toast.error("Story not found or already deleted");
       }
     } catch (error) {
       console.error("Error deleting story:", error);

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Spinner } from "@material-tailwind/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -16,13 +16,15 @@ import {
   FiMenu,
   FiX,
   FiLogOut,
+  FiShoppingCart,
 } from "react-icons/fi";
 import useAuth from "../hooks/useAuth";
 
 const DashboardLayout = () => {
-  const { user, loading, logOut } = useAuth();
+  const { user, loading, logout } = useAuth();
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-console.log(user);
+
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-linear-to-br from-gray-50 via-white to-gray-50">
@@ -32,19 +34,29 @@ console.log(user);
   }
 
   const navLinks = [
-    { to: "/", icon: FiHome, label: "Home", roles: ["admin", "tourGuide", 'user'] },
-    { to: "/dashboard/profile", icon: FiUser, label: "Profile", roles: ["admin", "tourGuide", 'user'] },
-    { to: "/dashboard/add-story", icon: FiPlus, label: "Add Story", roles: ["admin", "tourGuide", 'user'] },
-    { to: "/dashboard/manage-stories", icon: FiEdit, label: "Manage Stories", roles: ["admin", "tourGuide", 'user'] },
-    { to: "/dashboard/my-bookings", icon: FiBriefcase, label: "My Bookings", roles: ['user'] },
-    { to: "/dashboard/join-as-tour-guide", icon: FiUserPlus, label: "Join as Guide", roles: ['user'] },
+    { to: "/", icon: FiHome, label: "Home", roles: ["admin", "tourGuide", 'user', 'tourist'] },
+    { to: "/dashboard/profile", icon: FiUser, label: "Profile", roles: ["admin", "tourGuide", 'user', 'tourist'] },
+    { to: "/dashboard/add-story", icon: FiPlus, label: "Add Story", roles: ["admin", "tourGuide", 'user', 'tourist'] },
+    { to: "/dashboard/manage-stories", icon: FiEdit, label: "Manage Stories", roles: ["admin", "tourGuide", 'user', 'tourist'] },
+    { to: "/dashboard/my-bookings", icon: FiBriefcase, label: "My Bookings", roles: ['user', 'tourist'] },
+    { to: "/dashboard/join-as-tour-guide", icon: FiUserPlus, label: "Join as Guide", roles: ['user', 'tourist'] },
     { to: "/dashboard/my-assigned-tours", icon: FiClipboard, label: "Assigned Tours", roles: ["tourGuide"] },
     { to: "/dashboard/add-package", icon: FiPackage, label: "Add Package", roles: ["admin"] },
+    { to: "/dashboard/manage-packages", icon: FiPackage, label: "Manage Packages", roles: ["admin"] },
+    { to: "/dashboard/manage-bookings", icon: FiShoppingCart, label: "Manage Bookings", roles: ["admin"] },
     { to: "/dashboard/manage-users", icon: FiUsers, label: "Manage Users", roles: ["admin"] },
     { to: "/dashboard/manage-candidates", icon: FiUserPlus, label: "Manage Candidates", roles: ["admin"] },
   ];
 
-  const filteredLinks = navLinks.filter(link => link.roles.includes(user.role));
+  const filteredLinks = navLinks.filter(link => link.roles.includes(user?.role));
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden">
@@ -63,8 +75,9 @@ console.log(user);
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -300, opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="w-80 min-h-screen bg-white/80 backdrop-blur-xl border-r border-gray-200/50 shadow-2xl p-6 fixed lg:sticky top-0 z-50"
+              className="w-80 h-screen bg-white/80 backdrop-blur-xl border-r border-gray-200/50 shadow-2xl fixed top-0 left-0 z-50 overflow-y-auto"
             >
+              <div className="p-6">
               {/* Header */}
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-6">
@@ -150,18 +163,19 @@ console.log(user);
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                onClick={logOut}
+                onClick={handleLogout}
                 className="w-full mt-8 flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-red-600 hover:bg-red-50 transition-all"
               >
                 <FiLogOut className="w-5 h-5" />
                 <span>Logout</span>
               </motion.button>
+              </div>
             </motion.aside>
           )}
         </AnimatePresence>
 
         {/* Main Content */}
-        <div className="flex-1 min-h-screen">
+        <div className="flex-1 min-h-screen lg:ml-80">
           {/* Mobile Header */}
           <div className="lg:hidden sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 p-4">
             <button

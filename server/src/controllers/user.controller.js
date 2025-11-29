@@ -8,11 +8,37 @@ const addOrUpdateUser = async (req, res) => {
         const { usersCollection } = getCollections();
 
         const filter = { email };
-        const options = { upsert: true };
-        const updateDoc = { $set: userData };
+        const existingUser = await usersCollection.findOne(filter);
 
-        const result = await usersCollection.updateOne(filter, updateDoc, options);
-        res.send(result);
+        if (existingUser) {
+            // User exists - only update fields that should be updated, preserve role
+            const $set = {};
+            
+            if (userData.hasOwnProperty('name') && userData.name !== undefined) {
+                $set.name = userData.name;
+            }
+            
+            if (userData.hasOwnProperty('photo') && userData.photo !== undefined) {
+                $set.photo = userData.photo;
+            }
+            
+            // Only update if there are fields to update
+            if (Object.keys($set).length > 0) {
+                const result = await usersCollection.updateOne(filter, { $set });
+                res.send(result);
+            } else {
+                // No fields to update, return existing user
+                res.send({ acknowledged: true, matchedCount: 1, modifiedCount: 0 });
+            }
+        } else {
+            // New user - insert with default role
+            const newUser = {
+                ...userData,
+                role: userData.role || "tourist"
+            };
+            const result = await usersCollection.insertOne(newUser);
+            res.send(result);
+        }
     } catch (error) {
         console.error("Error adding/updating user:", error);
         res.status(500).send({ message: "Server error" });
@@ -72,9 +98,32 @@ const deleteUser = async (req, res) => {
     }
 };
 
+const updateUserRole = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { role } = req.body;
+        const { usersCollection } = getCollections();
+
+        const result = await usersCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { role } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).send({ message: "User not found" });
+        }
+
+        res.send({ message: "User role updated successfully" });
+    } catch (error) {
+        console.error("Error updating user role:", error);
+        res.status(500).send({ message: "Server error" });
+    }
+};
+
 module.exports = {
     addOrUpdateUser,
     getUserByEmail,
     getUsers,
-    deleteUser
+    deleteUser,
+    updateUserRole
 };

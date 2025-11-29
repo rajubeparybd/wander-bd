@@ -4,8 +4,36 @@ const { getCollections } = require('../config/database');
 const getAllTourGuides = async (req, res) => {
     try {
         const { tourGuidesCollection } = getCollections();
-        const guides = await tourGuidesCollection.find().toArray();
-        res.send(guides);
+        
+        // Use aggregation with $lookup to join users and filter by role in a single query
+        const validGuides = await tourGuidesCollection.aggregate([
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "email",
+                    foreignField: "email",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$user",
+                    preserveNullAndEmptyArrays: false
+                }
+            },
+            {
+                $match: {
+                    "user.role": "tourGuide"
+                }
+            },
+            {
+                $project: {
+                    user: 0
+                }
+            }
+        ]).toArray();
+        
+        res.send(validGuides);
     } catch (error) {
         console.error("Error fetching tour guides:", error);
         res.status(500).send({ message: "Server error" });

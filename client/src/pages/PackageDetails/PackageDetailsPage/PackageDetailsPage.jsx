@@ -47,12 +47,25 @@ const PackageDetailsPage = () => {
     },
   });
 
-  // ✅ Fetch tour guides from backend
+  // ✅ Fetch the assigned tour guide if tourGuideId exists
   const {
-    data: tourGuides = [],
+    data: assignedGuide,
     isLoading: guideLoading,
     isError: guideError,
     error: guideFetchError,
+  } = useQuery({
+    queryKey: ["tourGuide", tourPackage?.tourGuideId],
+    enabled: !!tourPackage?.tourGuideId,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/tour-guides/${tourPackage.tourGuideId}`);
+      return res.data;
+    },
+  });
+
+  // Fetch all tour guides for booking form (fallback)
+  const {
+    data: allTourGuides = [],
+    isLoading: allGuidesLoading,
   } = useQuery({
     queryKey: ["tourGuides"],
     queryFn: async () => {
@@ -61,7 +74,7 @@ const PackageDetailsPage = () => {
     },
   });
 
-  if (packageLoading || userLoading || guideLoading) {
+  if (packageLoading || userLoading || allGuidesLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 to-white">
         <motion.div
@@ -76,7 +89,7 @@ const PackageDetailsPage = () => {
     );
   }
 
-  if (packageError || userError || guideError) {
+  if (packageError || userError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 to-white">
         <motion.div
@@ -86,7 +99,7 @@ const PackageDetailsPage = () => {
         >
           <div className="text-6xl mb-4">😞</div>
           <p className="text-xl text-red-500 font-semibold">
-            {packageFetchError?.message || userFetchError?.message || guideFetchError?.message}
+            {packageFetchError?.message || userFetchError?.message}
           </p>
         </motion.div>
       </div>
@@ -178,7 +191,36 @@ const PackageDetailsPage = () => {
               description={tourPackage.description}
             />
             <TourPlan plan={parseItinerary(tourPackage.itinerary)} />
-            <TourGuideList guides={tourGuides} />
+            
+            {/* Tour Guide Section - Always show if tourGuideId exists */}
+            {tourPackage.tourGuideId && (
+              <>
+                {guideLoading ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex items-center justify-center py-12"
+                  >
+                    <div className="w-12 h-12 border-4 border-[#29AB87] border-t-transparent rounded-full animate-spin" />
+                  </motion.div>
+                ) : assignedGuide ? (
+                  <TourGuideList guides={[assignedGuide]} />
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 text-center"
+                  >
+                    <p className="text-yellow-800 font-semibold">
+                      Tour guide information is currently unavailable
+                    </p>
+                    <p className="text-yellow-600 text-sm mt-2">
+                      Please contact support if this issue persists
+                    </p>
+                  </motion.div>
+                )}
+              </>
+            )}
           </div>
 
           {/* Right Column - Booking Sidebar */}
@@ -193,7 +235,7 @@ const PackageDetailsPage = () => {
                 price={tourPackage.price}
                 packageName={tourPackage.title}
                 user={currentUser}
-                guides={tourGuides}
+                guides={assignedGuide ? [assignedGuide] : allTourGuides}
               />
             </motion.div>
           </div>

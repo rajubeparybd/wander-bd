@@ -11,7 +11,7 @@ const TouristStories = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const axios = useAxios();
-
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const { data: stories = [], isLoading } = useQuery({
     queryKey: ["stories"],
     queryFn: async () => {
@@ -77,7 +77,7 @@ const TouristStories = () => {
                   {/* Share Button Overlay */}
                   {user && (
                     <FacebookShareButton
-                      url={`https://wanderbd.com/story/${story._id}`}
+                      url={`${baseUrl}/story/${story._id}`}
                       className="absolute top-4 right-4 z-10"
                       onClick={(e) => e.stopPropagation()}
                     >

@@ -39,6 +39,11 @@ const addPackage = async (req, res) => {
         const packageData = req.body;
         const { packagesCollection } = getCollections();
 
+        // Validate required fields
+        if (!packageData.tourGuideId) {
+            return res.status(400).send({ message: "Tour guide is required" });
+        }
+
         const result = await packagesCollection.insertOne(packageData);
         res.send(result);
     } catch (error) {
@@ -146,9 +151,77 @@ const getDestinations = async (req, res) => {
     }
 };
 
+const updatePackage = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).send({ message: "Invalid package ID format" });
+        }
+
+        // Validate tourGuideId format if present
+        if (updateData.tourGuideId && !ObjectId.isValid(updateData.tourGuideId)) {
+            return res.status(400).send({ message: "Invalid tour guide ID format" });
+        }
+
+        const { packagesCollection } = getCollections();
+        
+        const result = await packagesCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: updateData }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).send({ message: "Package not found" });
+        }
+
+        res.send(result);
+    } catch (error) {
+        console.error("Error updating package:", error);
+        res.status(500).send({ message: "Server error" });
+    }
+};
+
+const deletePackage = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).send({ message: "Invalid package ID format" });
+        }
+
+        const { packagesCollection, bookingsCollection } = getCollections();
+        
+        // Check for related bookings
+        const relatedBookingsCount = await bookingsCollection.countDocuments({ 
+            packageId: new ObjectId(id) 
+        });
+
+        if (relatedBookingsCount > 0) {
+            return res.status(409).send({ 
+                message: "Cannot delete package with existing bookings" 
+            });
+        }
+
+        const result = await packagesCollection.deleteOne({ _id: new ObjectId(id) });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).send({ message: "Package not found" });
+        }
+
+        res.send(result);
+    } catch (error) {
+        console.error("Error deleting package:", error);
+        res.status(500).send({ message: "Server error" });
+    }
+};
+
 module.exports = {
     getAllPackages,
     getPackageById,
     addPackage,
+    updatePackage,
+    deletePackage,
     getDestinations
 };

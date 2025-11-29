@@ -14,7 +14,7 @@ const TourGuideCard = ({ guide }) => {
         {/* Image Container */}
         <div className="relative h-48 overflow-hidden">
           <img
-            src={guide.image}
+            src={guide.photoURL || guide.image || "/default-avatar.png"}
             alt={guide.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />

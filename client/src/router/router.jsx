@@ -23,12 +23,16 @@ import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
 import JoinAsTourGuide from "../pages/Dashboard/JoinAsTourGuide/JoinAsTourGuide";
 import MyAssignedTours from "../pages/Dashboard/MyAssignedTours/MyAssignedTours";
 import AddPackage from "../pages/Dashboard/AddPackage/AddPackage";
+import ManagePackages from "../pages/Dashboard/ManagePackages/ManagePackages";
+import ManageBookings from "../pages/Dashboard/ManageBookings/ManageBookings";
 import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
 import ManageCandidates from "../pages/Dashboard/ManageCandidates/ManageCandidates";
 import AddStory from "../pages/Dashboard/AddStory/AddStory";
 import ManageStories from "../pages/Dashboard/ManageStories/ManageStories";
 import EditStory from "../pages/Dashboard/ManageStories/EditStory";
 import Payment from "../pages/Dashboard/Payment/Payment";
+import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
+import PaymentCancel from "../pages/PaymentCancel/PaymentCancel";
 
 // Dashboard Pages
 
@@ -58,6 +62,8 @@ export const router = createBrowserRouter([
       { path: "about", element: <AboutUs /> },
       { path: "trips", element: <AllTrips /> },
       { path: "guides/:id", element: <TourGuideProfile /> },
+      { path: "payment-success", element: <PaymentSuccess /> },
+      { path: "payment-cancel", element: <PaymentCancel /> },
     ],
   },
   {
@@ -102,6 +108,22 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <AddPackage />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-packages",
+        element: (
+          <AdminRoute>
+            <ManagePackages />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-bookings",
+        element: (
+          <AdminRoute>
+            <ManageBookings />
           </AdminRoute>
         ),
       },

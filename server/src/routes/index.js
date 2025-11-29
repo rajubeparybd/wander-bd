@@ -14,7 +14,6 @@ const setupRoutes = (app) => {
     app.use('/tour-guides', tourGuideRoutes);
     app.use('/applications', applicationRoutes);
     app.use('/payments', paymentRoutes);
-    app.use('/create-payment-intent', paymentRoutes);
 
     // Health check route
     app.get('/', (req, res) => {
