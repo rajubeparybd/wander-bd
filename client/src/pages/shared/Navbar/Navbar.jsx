@@ -56,9 +56,6 @@ const Navbar = () => {
       <li><NavLink to="/community" className={navLinkClass}>Community</NavLink></li>
       <li><NavLink to="/about" className={navLinkClass}>About</NavLink></li>
       <li><NavLink to="/trips" className={navLinkClass}>Trips</NavLink></li>
-      {user && (
-        <li><NavLink to="/dashboard/profile" className={navLinkClass}>Dashboard</NavLink></li>
-      )}
     </>
   );
 
