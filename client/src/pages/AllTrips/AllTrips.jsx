@@ -2,14 +2,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { FiMapPin, FiClock, FiDollarSign, FiArrowRight, FiTag, FiFilter, FiSearch } from 'react-icons/fi';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 const AllTrips = () => {
   const axiosSecure = useAxiosSecure();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   const { data: packages = [], isLoading, error } = useQuery({
     queryKey: ['packages'],
@@ -19,14 +19,29 @@ const AllTrips = () => {
     }
   });
 
-  const categories = ['all', ...new Set(packages.map(pkg => pkg.tourType).filter(Boolean))];
+  // Get unique categories (without 'all')
+  const categories = useMemo(() => {
+    return [...new Set(packages.map(pkg => pkg.tourType).filter(Boolean))];
+  }, [packages]);
 
-  const filteredPackages = packages.filter(pkg => {
-    const matchesSearch = pkg.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         pkg.location?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || pkg.tourType === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Get unique destinations
+  const uniqueDestinations = useMemo(() => {
+    return [...new Set(packages.map(pkg => pkg.location).filter(Boolean))];
+  }, [packages]);
+
+  // Filter packages based on search and category
+  const filteredPackages = useMemo(() => {
+    return packages.filter(pkg => {
+      const matchesSearch = searchTerm === '' || 
+        pkg.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        pkg.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        pkg.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesCategory = selectedCategory === '' || pkg.tourType === selectedCategory;
+      
+      return matchesSearch && matchesCategory;
+    });
+  }, [packages, searchTerm, selectedCategory]);
 
   // Calculate average duration from packages
   const calculateAvgDuration = () => {
@@ -52,8 +67,8 @@ const AllTrips = () => {
   };
 
   const stats = [
-    { icon: FiMapPin, label: "Destinations", value: packages.length.toString(), color: "from-[#29AB87] to-[#06B6D4]" },
-    { icon: FiTag, label: "Categories", value: (categories.length - 1).toString(), color: "from-[#4F46E5] to-[#9333EA]" },
+    { icon: FiMapPin, label: "Destinations", value: uniqueDestinations.length.toString(), color: "from-[#29AB87] to-[#06B6D4]" },
+    { icon: FiTag, label: "Categories", value: categories.length.toString(), color: "from-[#4F46E5] to-[#9333EA]" },
     { icon: FiClock, label: "Avg Duration", value: `${calculateAvgDuration()} Days`, color: "from-[#06B6D4] to-[#4F46E5]" },
   ];
 
@@ -136,22 +151,6 @@ const AllTrips = () => {
                     className="w-full pl-12 pr-4 py-4 rounded-full border-2 border-gray-200 focus:border-[#29AB87] focus:outline-none text-gray-800 font-medium"
                   />
                 </div>
-
-                {/* Category Filter */}
-                <div className="relative">
-                  <FiFilter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="pl-12 pr-8 py-4 rounded-full border-2 border-gray-200 focus:border-[#29AB87] focus:outline-none text-gray-800 font-medium appearance-none bg-white cursor-pointer min-w-[200px]"
-                  >
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category === 'all' ? 'All Categories' : category}
-                      </option>
-                    ))}
-                  </select>
-                </div>
               </div>
             </div>
           </motion.div>
@@ -197,6 +196,19 @@ const AllTrips = () => {
               </div>
               <p className="text-xl text-gray-600 font-semibold">No trips found</p>
               <p className="text-gray-500 mt-2">Try adjusting your search or filters</p>
+              {(searchTerm || selectedCategory) && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSelectedCategory('');
+                  }}
+                  className="mt-6 px-6 py-3 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white rounded-full font-bold"
+                >
+                  Clear Filters
+                </motion.button>
+              )}
             </motion.div>
           ) : (
             <>
@@ -207,6 +219,20 @@ const AllTrips = () => {
               >
                 <p className="text-gray-600">
                   Showing <span className="font-bold text-[#29AB87]">{filteredPackages.length}</span> trip{filteredPackages.length !== 1 ? 's' : ''}
+                  {(searchTerm || selectedCategory) && (
+                    <span>
+                      {' '}· {' '}
+                      <button
+                        onClick={() => {
+                          setSearchTerm('');
+                          setSelectedCategory('');
+                        }}
+                        className="text-[#29AB87] hover:underline font-semibold"
+                      >
+                        Clear filters
+                      </button>
+                    </span>
+                  )}
                 </p>
               </motion.div>
 
