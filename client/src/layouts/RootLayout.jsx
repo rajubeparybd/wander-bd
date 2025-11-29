@@ -6,12 +6,12 @@ import Footer from '../pages/shared/Footer/Footer';
 const RootLayout = () => {
     return (
         <div>
-            <Navbar></Navbar>
-            <div className='w-11/12 mx-auto'>
-                <Outlet></Outlet>
+            <Navbar />
+            <div className='w-full mx-auto pt-20'>
+                <Outlet />
             </div>
 
-            <Footer></Footer>
+            <Footer />
         </div>
     );
 };

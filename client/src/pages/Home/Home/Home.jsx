@@ -8,15 +8,15 @@ import PlanYourTrip from '../PlanYourTrip/PlanYourTrip';
 
 const Home = () => {
     return (
-        <div>
-            <Banner></Banner>
-            <Overview></Overview>
-            <TourismAndGuide></TourismAndGuide>
-            <TouristStories></TouristStories>
-            <CoverageMap></CoverageMap>
-            <PlanYourTrip></PlanYourTrip>
+        <>
+            <Banner />
+            <Overview />
+            <TourismAndGuide />
+            <TouristStories />
+            <CoverageMap />
+            <PlanYourTrip />
             
-        </div>
+        </>
     );
 };
 
