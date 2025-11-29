@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { FacebookShareButton } from "react-share";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../../hooks/useAxios";
@@ -175,7 +176,9 @@ const TouristStories = () => {
             onClick={() => navigate("/community")}
             className="px-10 py-4 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white font-bold rounded-full text-lg shadow-lg hover:shadow-xl transition-shadow"
           >
-            View All Stories →
+            <Link to="/community">
+              View All Stories →
+            </Link>
           </motion.button>
         </motion.div>
       </div>

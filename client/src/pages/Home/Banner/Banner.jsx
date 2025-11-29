@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { motion } from 'framer-motion';
 import { FiStar, FiMapPin, FiUsers, FiAward, FiCompass } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 const Banner = () => {
   return (
@@ -67,7 +68,9 @@ const Banner = () => {
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-4 bg-black text-white font-bold rounded-full text-lg shadow-lg hover:shadow-xl transition-shadow"
               >
-                Start Exploring
+                <Link to="/trips">
+                  Start Exploring
+                </Link>
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05, y: -2 }}

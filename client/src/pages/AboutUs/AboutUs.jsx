@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { motion } from 'framer-motion';
 import { FiMapPin, FiUsers, FiAward, FiHeart, FiShield, FiTrendingUp, FiTarget, FiCompass } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 const AboutUs = () => {
   const features = [
@@ -147,7 +149,9 @@ const AboutUs = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-4 bg-black text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-shadow"
                 >
-                  Join Our Community
+                  <Link to="/community">
+                    Join Our Community
+                    </Link>
                 </motion.button>
               </div>
             </motion.div>
@@ -362,7 +366,9 @@ const AboutUs = () => {
               whileTap={{ scale: 0.95 }}
               className="px-10 py-4 bg-white text-black font-bold rounded-full text-lg shadow-lg hover:shadow-xl transition-shadow"
             >
-              Explore Trips Now →
+              <Link to="/trips">
+                Explore Trips Now →
+              </Link>
             </motion.button>
           </motion.div>
         </div>
