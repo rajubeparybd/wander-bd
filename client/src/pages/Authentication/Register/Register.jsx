@@ -30,7 +30,8 @@ const Register = () => {
       });
 
       // Step 3: Save user to MongoDB
-      await fetch(`http://localhost:5000/users/${user.email}`, {
+      const serverUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      await fetch(`${serverUrl}/users/${user.email}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

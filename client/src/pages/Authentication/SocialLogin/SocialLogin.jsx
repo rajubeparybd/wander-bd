@@ -24,7 +24,8 @@ const SocialLogin = () => {
       };
 
       // Replace with your actual backend URL
-      await fetch(`https://your-backend-server.com/users/${user.email}`, {
+      const serverUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      await fetch(`${serverUrl}/users/${user.email}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

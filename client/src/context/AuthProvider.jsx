@@ -13,7 +13,8 @@ const AuthProvider = ({ children }) => {
       if (firebaseUser) {
         try {
           // Fetch user role from your backend using the email
-          const res = await axios.get(`http://localhost:5000/users/${firebaseUser.email}`);
+          const serverUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+          const res = await axios.get(`${serverUrl}/users/${firebaseUser.email}`);
           const role = res.data?.role || "tourist"; // default fallback role
 
           // Compose full user object with role

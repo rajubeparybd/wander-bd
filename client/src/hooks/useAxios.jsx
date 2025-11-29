@@ -3,8 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:5000", // ✅ Replace with your backend URL
-  withCredentials: true, // Only if you're using cookies — safe to leave
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+  withCredentials: true, 
 });
 
 const useAxios = () => {
@@ -13,7 +13,7 @@ const useAxios = () => {
   useEffect(() => {
     const requestInterceptor = axiosSecure.interceptors.request.use(
       (config) => {
-        const token = localStorage.getItem("access-token"); // ✅ Match your localStorage key
+        const token = localStorage.getItem("access-token"); 
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }

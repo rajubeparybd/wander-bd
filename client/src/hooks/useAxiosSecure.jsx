@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 const useAxiosSecure = () => {
   const axiosSecure = axios.create({
-    baseURL: 'http://localhost:5000', // your backend URL
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000", // your backend URL
   });
 
   // You can add interceptors here for JWT when ready:
