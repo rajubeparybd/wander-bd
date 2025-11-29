@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -44,7 +45,7 @@ const CoverageMap = () => {
   };
 
   return (
-    <section className="py-32 px-4 md:px-8 lg:px-16 bg-linear-to-b from-white to-gray-50">
+    <section className="py-32 px-4 md:px-8 lg:px-16 max-w-11/12 mx-auto bg-linear-to-b from-white to-gray-50">
       <div className="w-full">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -63,13 +64,13 @@ const CoverageMap = () => {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Location List */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="space-y-4"
+            className="space-y-4 lg:col-span-1"
           >
             <h3 className="text-2xl font-bold mb-6">Popular Destinations</h3>
             {dummyServiceCenters.map((location, index) => (
@@ -105,13 +106,12 @@ const CoverageMap = () => {
               </motion.div>
             ))}
           </motion.div>
-
           {/* Right Column - Map */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative h-[600px] rounded-3xl overflow-hidden shadow-2xl sticky top-24"
+            className="relative h-[600px] rounded-3xl overflow-hidden shadow-2xl sticky top-24 lg:col-span-2"
           >
             <MapContainer center={defaultPosition} zoom={7} scrollWheelZoom={true} className="h-full w-full">
               <TileLayer

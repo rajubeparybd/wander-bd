@@ -1,40 +1,54 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiCheck, FiMapPin, FiClock, FiHeart, FiDollarSign } from "react-icons/fi";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { Link } from "react-router-dom";
 
-const destinations = [
-  { name: "Cox's Bazar", icon: "🏖️" },
-  { name: "Sundarbans", icon: "🌴" },
-  { name: "Srimangal", icon: "🍵" },
-  { name: "Bandarban", icon: "⛰️" },
-  { name: "Dhaka", icon: "🏛️" },
-  { name: "Sylhet", icon: "💚" },
-];
+// Icon mapping for destinations
+const destinationIcons = {
+  "cox's bazar": "🏖️",
+  "coxs bazar": "🏖️",
+  "sundarbans": "🌴",
+  "srimangal": "🍵",
+  "bandarban": "⛰️",
+  "dhaka": "🏛️",
+  "sylhet": "💚",
+  "chittagong": "🏙️",
+  "rangamati": "🏞️",
+  "khulna": "🌊",
+};
 
-const durations = [
-  { label: "2-3 Days", value: 3, icon: "⚡" },
-  { label: "4-5 Days", value: 5, icon: "📅" },
-  { label: "1 Week", value: 7, icon: "🌟" },
-  { label: "2 Weeks+", value: 14, icon: "🎒" },
-];
+// Icon mapping for tour types
+const tourTypeIcons = {
+  "adventure": { icon: "🧗", description: "Thrilling experiences" },
+  "relaxing": { icon: "🧘", description: "Peace and tranquility" },
+  "cultural": { icon: "🎭", description: "Heritage & traditions" },
+  "family": { icon: "👨‍👩‍👧‍👦", description: "Fun for all ages" },
+  "romantic": { icon: "💕", description: "Couples getaway" },
+  "wildlife": { icon: "🦁", description: "Nature & animals" },
+  "beach": { icon: "🏖️", description: "Coastal paradise" },
+  "historical": { icon: "🏛️", description: "Ancient wonders" },
+  "nature": { icon: "🌿", description: "Natural beauty" },
+};
 
-const travelTypes = [
-  { name: "Adventure", icon: "🧗", description: "Thrilling experiences" },
-  { name: "Relaxing", icon: "🧘", description: "Peace and tranquility" },
-  { name: "Cultural", icon: "🎭", description: "Heritage & traditions" },
-  { name: "Family", icon: "👨‍👩‍👧‍👦", description: "Fun for all ages" },
-  { name: "Romantic", icon: "💕", description: "Couples getaway" },
-  { name: "Wildlife", icon: "🦁", description: "Nature & animals" },
-];
-
-const dummyPackages = [
-  { id: 1, title: "Cox's Bazar Beach Escape", tourType: "Relaxing", duration: 3, price: 150, destination: "Cox's Bazar" },
-  { id: 2, title: "Sundarbans Wildlife Safari", tourType: "Wildlife", duration: 4, price: 200, destination: "Sundarbans" },
-  { id: 3, title: "Srimangal Tea Garden Retreat", tourType: "Relaxing", duration: 2, price: 100, destination: "Srimangal" },
-  { id: 4, title: "Bandarban Hills Trekking", tourType: "Adventure", duration: 5, price: 250, destination: "Bandarban" },
-];
+// Helper function to parse duration string to days
+const parseDurationToDays = (durationStr) => {
+  if (!durationStr) return 0;
+  
+  // Convert to string if it's a number
+  const str = typeof durationStr === 'string' ? durationStr : String(durationStr);
+  
+  const match = str.toLowerCase().match(/(\d+)\s*(day|week)/);
+  if (!match) return 0;
+  const value = parseInt(match[1]);
+  const unit = match[2];
+  return unit === "week" ? value * 7 : value;
+};
 
 const PlanYourTrip = () => {
+  const axiosSecure = useAxiosSecure();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     destination: "",
@@ -42,6 +56,58 @@ const PlanYourTrip = () => {
     travelType: "",
     budget: 500,
   });
+
+  // Fetch packages from API
+  const { data: packages = [], isLoading } = useQuery({
+    queryKey: ["packages"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/packages");
+      return res.data;
+    }
+  });
+
+  // Extract unique destinations from packages
+  const destinations = useMemo(() => {
+    const uniqueLocations = [...new Set(packages.map(pkg => pkg.location).filter(Boolean))];
+    return uniqueLocations.map(location => {
+      const lowerLocation = location.toLowerCase();
+      const icon = destinationIcons[lowerLocation] || "📍";
+      return { name: location, icon };
+    });
+  }, [packages]);
+
+  // Extract unique durations from packages
+  const durations = useMemo(() => {
+    const uniqueDurations = [...new Set(packages.map(pkg => pkg.duration).filter(Boolean))];
+    const durationMap = new Map();
+    
+    uniqueDurations.forEach(duration => {
+      const durationDays = parseDurationToDays(duration);
+      if (!durationMap.has(durationDays)) {
+        durationMap.set(durationDays, {
+          label: duration,
+          value: durationDays,
+          icon: durationDays <= 3 ? "⚡" : durationDays <= 5 ? "📅" : durationDays <= 7 ? "🌟" : "🎒"
+        });
+      }
+    });
+    
+    return Array.from(durationMap.values()).sort((a, b) => a.value - b.value);
+  }, [packages]);
+
+  // Extract unique travel types from packages
+  const travelTypes = useMemo(() => {
+    const uniqueTypes = [...new Set(packages.map(pkg => pkg.tourType).filter(Boolean))];
+    return uniqueTypes.map(type => {
+      const lowerType = type.toLowerCase();
+      const typeInfo = tourTypeIcons[lowerType] || { icon: "🎯", description: "Unique experience" };
+      return {
+        name: type,
+        icon: typeInfo.icon,
+        description: typeInfo.description
+      };
+    });
+  }, [packages]);
 
   const nextStep = () => setStep((prev) => Math.min(prev + 1, 5));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
@@ -62,13 +128,29 @@ const PlanYourTrip = () => {
     setFormData((prev) => ({ ...prev, budget: e.target.value }));
   };
 
-  const filteredPackages = dummyPackages.filter((pkg) => {
-    return (
-      (formData.destination ? pkg.destination === formData.destination : true) &&
-      (formData.travelType ? pkg.tourType === formData.travelType : true) &&
-      (formData.duration ? pkg.duration <= Number(formData.duration) : true) &&
-      pkg.price <= Number(formData.budget)
-    );
+  // Filter packages based on user preferences
+  const filteredPackages = packages.filter((pkg) => {
+    const pkgDurationDays = parseDurationToDays(pkg.duration);
+    
+    // Exact match for destination
+    const destinationMatch = formData.destination 
+      ? pkg.location === formData.destination 
+      : true;
+    
+    // Exact match for tour type
+    const typeMatch = formData.travelType 
+      ? pkg.tourType === formData.travelType 
+      : true;
+    
+    // Duration match - package duration should be less than or equal to selected duration
+    const durationMatch = formData.duration 
+      ? pkgDurationDays <= Number(formData.duration) 
+      : true;
+    
+    // Budget match
+    const budgetMatch = pkg.price <= Number(formData.budget);
+
+    return destinationMatch && typeMatch && durationMatch && budgetMatch;
   });
 
   return (
@@ -145,103 +227,129 @@ const PlanYourTrip = () => {
               >
                 {step === 1 && (
                   <div>
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
-                        <FiMapPin className="w-6 h-6 text-white" />
-                      </div>
+                    <div className="mb-6">
                       <h3 className="text-3xl font-bold">Where do you want to go?</h3>
                     </div>
-                    <p className="text-gray-600 mb-8">Select your dream destination</p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {destinations.map((dest) => (
-                        <motion.button
-                          key={dest.name}
-                          whileHover={{ scale: 1.05, y: -4 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleDestinationSelect(dest)}
-                          className={`p-6 rounded-2xl font-semibold transition-all border-2 ${
-                            formData.destination === dest.name
-                              ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
-                              : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
-                          }`}
-                        >
-                          <div className="text-3xl mb-2">{dest.icon}</div>
-                          <div className="text-sm">{dest.name}</div>
-                        </motion.button>
-                      ))}
-                    </div>
+                    <p className="text-gray-600 mb-4">Select your dream destination</p>
+
+                    {isLoading ? (
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 border-4 border-[#29AB87] border-t-transparent rounded-full animate-spin mx-auto" />
+                        <p className="text-gray-600 mt-4">Loading destinations...</p>
+                      </div>
+                    ) : destinations.length === 0 ? (
+                      <div className="text-center py-12">
+                        <div className="text-6xl mb-4">📍</div>
+                        <p className="text-xl text-gray-600">No destinations available yet.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {destinations.map((dest) => (
+                          <motion.button
+                            key={dest.name}
+                            type="button"
+                            whileHover={{ scale: 1.05, y: -4 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleDestinationSelect(dest)}
+                            className={`p-6 rounded-2xl font-semibold transition-all border-2 ${
+                              formData.destination === dest.name
+                                ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
+                                : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
+                            }`}
+                          >
+                            <div className="text-sm">{dest.name}</div>
+                          </motion.button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {step === 2 && (
                   <div>
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
-                        <FiClock className="w-6 h-6 text-white" />
-                      </div>
+                    <div className="mb-6">
                       <h3 className="text-3xl font-bold">How long is your trip?</h3>
                     </div>
-                    <p className="text-gray-600 mb-8">Choose your preferred duration</p>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {durations.map((dur) => (
-                        <motion.button
-                          key={dur.label}
-                          whileHover={{ scale: 1.05, y: -4 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleDurationSelect(dur)}
-                          className={`p-6 rounded-2xl font-semibold transition-all border-2 ${
-                            formData.duration === dur.value
-                              ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
-                              : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
-                          }`}
-                        >
-                          <div className="text-3xl mb-2">{dur.icon}</div>
-                          <div className="text-sm">{dur.label}</div>
-                        </motion.button>
-                      ))}
-                    </div>
+                    <p className="text-gray-600 mb-4">Choose your preferred duration</p>
+                    {isLoading ? (
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 border-4 border-[#29AB87] border-t-transparent rounded-full animate-spin mx-auto" />
+                        <p className="text-gray-600 mt-4">Loading durations...</p>
+                      </div>
+                    ) : durations.length === 0 ? (
+                      <div className="text-center py-12">
+                        <div className="text-6xl mb-4">⏱️</div>
+                        <p className="text-xl text-gray-600">No durations available yet.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {durations.map((dur) => (
+                          <motion.button
+                            key={dur.value}
+                            type="button"
+                            whileHover={{ scale: 1.05, y: -4 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleDurationSelect(dur)}
+                            className={`p-6 rounded-2xl font-semibold transition-all border-2 ${
+                              formData.duration === dur.value
+                                ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
+                                : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
+                            }`}
+                          >
+                            <div className="text-sm">{dur.label}</div>
+                          </motion.button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {step === 3 && (
                   <div>
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
-                        <FiHeart className="w-6 h-6 text-white" />
-                      </div>
+                    <div className="mb-6">
                       <h3 className="text-3xl font-bold">What type of experience?</h3>
                     </div>
-                    <p className="text-gray-600 mb-8">Pick your travel style</p>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {travelTypes.map((type) => (
-                        <motion.button
-                          key={type.name}
-                          whileHover={{ scale: 1.05, y: -4 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleTypeSelect(type)}
-                          className={`p-6 rounded-2xl font-semibold transition-all border-2 ${
-                            formData.travelType === type.name
-                              ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
-                              : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
-                          }`}
-                        >
-                          <div className="text-3xl mb-2">{type.icon}</div>
-                          <div className="text-sm font-bold mb-1">{type.name}</div>
-                          <div className={`text-xs ${formData.travelType === type.name ? 'text-white/80' : 'text-gray-500'}`}>
-                            {type.description}
-                          </div>
-                        </motion.button>
-                      ))}
-                    </div>
+                    <p className="text-gray-600 mb-4">Pick your travel style</p>
+
+                    {isLoading ? (
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 border-4 border-[#29AB87] border-t-transparent rounded-full animate-spin mx-auto" />
+                        <p className="text-gray-600 mt-4">Loading experiences...</p>
+                      </div>
+                    ) : travelTypes.length === 0 ? (
+                      <div className="text-center py-12">
+                        <div className="text-6xl mb-4">🎯</div>
+                        <p className="text-xl text-gray-600">No travel types available yet.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {travelTypes.map((type) => (
+                          <motion.button
+                            key={type.name}
+                            type="button"
+                            whileHover={{ scale: 1.05, y: -4 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => handleTypeSelect(type)}
+                            className={`p-6 rounded-2xl font-semibold transition-all border-2 ${
+                              formData.travelType === type.name
+                                ? "bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white border-transparent shadow-xl"
+                                : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
+                            }`}
+                          >
+                            <div className="text-sm font-bold mb-1">{type.name}</div>
+                            <div className={`text-xs ${formData.travelType === type.name ? 'text-white/80' : 'text-gray-500'}`}>
+                              {type.description}
+                            </div>
+                          </motion.button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {step === 4 && (
                   <div>
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-12 h-12 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
-                        <FiDollarSign className="w-6 h-6 text-white" />
-                      </div>
+                    <div className="mb-6">
                       <h3 className="text-3xl font-bold">What's your budget?</h3>
                     </div>
                     <p className="text-gray-600 mb-8">Set your travel budget per person</p>
@@ -281,7 +389,12 @@ const PlanYourTrip = () => {
                       </div>
                       <h3 className="text-3xl font-bold">Perfect Matches for You</h3>
                     </div>
-                    {filteredPackages.length === 0 ? (
+                    {isLoading ? (
+                      <div className="text-center py-12">
+                        <div className="w-16 h-16 border-4 border-[#29AB87] border-t-transparent rounded-full animate-spin mx-auto" />
+                        <p className="text-gray-600 mt-4">Finding perfect packages for you...</p>
+                      </div>
+                    ) : filteredPackages.length === 0 ? (
                       <div className="text-center py-12">
                         <div className="text-6xl mb-4">🔍</div>
                         <p className="text-xl text-gray-600">No packages match your criteria.</p>
@@ -290,31 +403,70 @@ const PlanYourTrip = () => {
                     ) : (
                       <div className="grid gap-6">
                         {filteredPackages.map((pkg, index) => (
-                          <motion.div
-                            key={pkg.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            whileHover={{ scale: 1.02, x: 8 }}
-                            className="p-6 bg-white rounded-2xl border-2 border-gray-200 hover:border-[#29AB87] transition-all shadow-lg hover:shadow-xl"
-                          >
-                            <div className="flex justify-between items-start">
-                              <div className="flex-1">
-                                <h4 className="text-2xl font-bold mb-2">{pkg.title}</h4>
-                                <div className="flex gap-4 text-sm text-gray-600">
-                                  <span>📍 {pkg.destination}</span>
-                                  <span>🎯 {pkg.tourType}</span>
-                                  <span>⏱️ {pkg.duration} days</span>
+                          <Link key={pkg._id} to={`/package/${pkg._id}`}>
+                            <motion.div
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              whileHover={{ scale: 1.02, x: 8 }}
+                              className="p-6 bg-white rounded-2xl border-2 border-gray-200 hover:border-[#29AB87] transition-all shadow-lg hover:shadow-xl cursor-pointer"
+                            >
+                              <div className="flex gap-6 items-start">
+                                {/* Package Image */}
+                                {pkg.images && pkg.images[0] && (
+                                  <div className="w-32 h-32 rounded-xl overflow-hidden shrink-0">
+                                    <img 
+                                      src={pkg.images[0]} 
+                                      alt={pkg.title || pkg.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                )}
+                                
+                                <div className="flex-1">
+                                  <div className="flex justify-between items-start mb-3">
+                                    <div className="flex-1">
+                                      <h4 className="text-2xl font-bold mb-2 group-hover:text-[#29AB87] transition-colors">
+                                        {pkg.title || pkg.name}
+                                      </h4>
+                                      <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                                        <span className="flex items-center gap-1">
+                                          <FiMapPin className="text-[#29AB87]" />
+                                          {pkg.location}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                          🎯 {pkg.tourType}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                          <FiClock className="text-[#4F46E5]" />
+                                          {pkg.duration}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="text-right ml-4">
+                                      <div className="text-3xl font-black bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+                                        ${pkg.price}
+                                      </div>
+                                      <div className="text-xs text-gray-500 mt-1">per person</div>
+                                    </div>
+                                  </div>
+                                  
+                                  {pkg.description && (
+                                    <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                                      {pkg.description}
+                                    </p>
+                                  )}
+
+                                  <div className="flex items-center gap-2 text-[#29AB87] font-bold text-sm">
+                                    <span>View Details</span>
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                  </div>
                                 </div>
                               </div>
-                              <div className="text-right">
-                                <div className="text-3xl font-black bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
-                                  ${pkg.price}
-                                </div>
-                                <div className="text-xs text-gray-500 mt-1">per person</div>
-                              </div>
-                            </div>
-                          </motion.div>
+                            </motion.div>
+                          </Link>
                         ))}
                       </div>
                     )}
@@ -343,12 +495,7 @@ const PlanYourTrip = () => {
                 whileHover={{ scale: 1.05, x: 4 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={nextStep}
-                disabled={
-                  (step === 1 && !formData.destination) ||
-                  (step === 2 && !formData.duration) ||
-                  (step === 3 && !formData.travelType)
-                }
-                className="ml-auto px-8 py-3 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white rounded-full font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-shadow"
+                className="ml-auto px-8 py-3 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white rounded-full font-bold shadow-lg hover:shadow-xl transition-shadow"
               >
                 Continue →
               </motion.button>
@@ -361,3 +508,6 @@ const PlanYourTrip = () => {
 };
 
 export default PlanYourTrip;
+
+
+
