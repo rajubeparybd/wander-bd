@@ -1,8 +1,17 @@
 /* eslint-disable no-unused-vars */
-import { NavLink } from "react-router-dom";
-import { useState } from "react";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { FiCompass } from "react-icons/fi";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
+import { 
+  FiCompass, 
+  FiUser, 
+  FiSettings, 
+  FiLogOut, 
+  FiGrid, 
+  FiHeart,
+  FiBookOpen,
+  FiChevronDown 
+} from "react-icons/fi";
 import useAuth from "../../../hooks/useAuth";
 import useUserRole from "../../../hooks/useUserRole";
 
@@ -11,6 +20,9 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false);
   const { role } = useUserRole();
   const [hidden, setHidden] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const navigate = useNavigate();
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -21,6 +33,17 @@ const Navbar = () => {
       setHidden(false);
     }
   });
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const navLinkClass = ({ isActive }) =>
     `px-4 py-2 font-medium transition-colors ${
@@ -43,12 +66,20 @@ const Navbar = () => {
     try {
       setLoading(true);
       await logout();
+      setIsMenuOpen(false);
     } catch (error) {
       console.error("Logout failed:", error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  const userMenuItems = [
+    { icon: FiUser, label: "Profile", path: "/dashboard/profile" },
+    { icon: FiGrid, label: "Dashboard", path: "/dashboard/profile" },
+    { icon: FiHeart, label: "My Bookings", path: "/dashboard/my-bookings", roles: ["tourist"] },
+    { icon: FiBookOpen, label: "My Stories", path: "/dashboard/manage-stories" },
+  ];
 
   return (
     <motion.div
@@ -77,24 +108,97 @@ const Navbar = () => {
           {/* Auth Section */}
           <div className="flex items-center gap-4">
             {user ? (
-              <>
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200">
-                  <img
-                    src={user.photoURL || "/default-avatar.png"}
-                    alt={user.displayName}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+              <div className="relative" ref={menuRef}>
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleLogout}
-                  className="px-6 py-2 bg-black text-white rounded-full font-bold"
-                  disabled={loading}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="flex items-center gap-3 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                 >
-                  {loading ? "..." : "Logout"}
+                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#29AB87]">
+                    <img
+                      src={user.photoURL || "/default-avatar.png"}
+                      alt={user.displayName}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="font-semibold text-sm hidden md:block">
+                    {user.displayName?.split(" ")[0]}
+                  </span>
+                  <FiChevronDown 
+                    className={`w-4 h-4 transition-transform ${isMenuOpen ? "rotate-180" : ""}`} 
+                  />
                 </motion.button>
-              </>
+
+                {/* Dropdown Menu */}
+                <AnimatePresence>
+                  {isMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-50"
+                    >
+                      {/* User Info */}
+                      <div className="p-4 bg-linear-to-br from-[#29AB87] to-[#4F46E5] text-white">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white">
+                            <img
+                              src={user.photoURL || "/default-avatar.png"}
+                              alt={user.displayName}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-sm truncate">
+                              {user.displayName}
+                            </h3>
+                            <p className="text-xs text-white/80 truncate">
+                              {user.email}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Menu Items */}
+                      <div className="py-2">
+                        {userMenuItems
+                          .filter(item => !item.roles || item.roles.includes(role))
+                          .map((item, index) => (
+                            <motion.button
+                              key={index}
+                              whileHover={{ backgroundColor: "#f3f4f6" }}
+                              onClick={() => {
+                                navigate(item.path);
+                                setIsMenuOpen(false);
+                              }}
+                              className="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-700 hover:text-[#29AB87] transition-colors"
+                            >
+                              <item.icon className="w-5 h-5" />
+                              <span className="font-medium">{item.label}</span>
+                            </motion.button>
+                          ))}
+                      </div>
+
+                      {/* Logout */}
+                      <div className="border-t border-gray-200 p-2">
+                        <motion.button
+                          whileHover={{ backgroundColor: "#fef2f2" }}
+                          onClick={handleLogout}
+                          disabled={loading}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-left text-red-600 hover:text-red-700 transition-colors rounded-xl"
+                        >
+                          <FiLogOut className="w-5 h-5" />
+                          <span className="font-medium">
+                            {loading ? "Logging out..." : "Logout"}
+                          </span>
+                        </motion.button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ) : (
               <NavLink to="/login">
                 <motion.button
