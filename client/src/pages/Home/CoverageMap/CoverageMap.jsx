@@ -5,6 +5,8 @@ import "leaflet/dist/leaflet.css";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FiMapPin, FiChevronRight } from "react-icons/fi";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const defaultPosition = [23.685, 90.3563];
 
@@ -26,23 +28,53 @@ function FlyToDistrict({ coords }) {
   return null;
 }
 
-const dummyServiceCenters = [
-  { district: "Cox's Bazar", latitude: 21.4272, longitude: 92.0058, covered_area: ["Inani", "Himchari", "Laboni Beach"], travelers: "2.3k+" },
-  { district: "Dhaka", latitude: 23.8103, longitude: 90.4125, covered_area: ["Lalbagh", "Old Dhaka", "Dhanmondi"], travelers: "5.1k+" },
-  { district: "Bandarban", latitude: 21.8311, longitude: 92.3686, covered_area: ["Nilgiri", "Boga Lake", "Sangu River"], travelers: "1.8k+" },
-  { district: "Srimangal", latitude: 24.3065, longitude: 91.7296, covered_area: ["Lawachara", "Tea Gardens", "Baikka Beel"], travelers: "1.2k+" },
-  { district: "Sundarbans", latitude: 21.9497, longitude: 89.1833, covered_area: ["Tiger Reserve", "Mangrove Forest", "River Safari"], travelers: "980+" },
-  { district: "Sylhet", latitude: 24.8949, longitude: 91.8687, covered_area: ["Ratargul", "Jaflong", "Tea Estates"], travelers: "1.5k+" },
-];
-
 const CoverageMap = () => {
+  const axiosSecure = useAxiosSecure();
   const [activeCoords, setActiveCoords] = useState(null);
   const [activeDistrict, setActiveDistrict] = useState(null);
+
+  // Fetch destinations from API with limit of 5
+  const { data: destinations = [], isLoading } = useQuery({
+    queryKey: ["destinations"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/packages/destinations/list?limit=5");
+      return res.data;
+    }
+  });
 
   const handleLocationClick = (location) => {
     setActiveCoords([location.latitude, location.longitude]);
     setActiveDistrict(location.district);
   };
+
+  if (isLoading) {
+    return (
+      <section className="py-32 px-4 md:px-8 lg:px-16 max-w-11/12 mx-auto bg-linear-to-b from-white to-gray-50">
+        <div className="w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-6xl md:text-7xl font-black mb-6">
+              We're{' '}
+              <span className="bg-linear-to-r from-[#29AB87] to-[#4F46E5] bg-clip-text text-transparent">
+                Everywhere
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Explore our coverage across Bangladesh's most beautiful destinations
+            </p>
+          </motion.div>
+          <div className="text-center py-12">
+            <div className="w-16 h-16 border-4 border-[#29AB87] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-gray-600 mt-4">Loading destinations...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-32 px-4 md:px-8 lg:px-16 max-w-11/12 mx-auto bg-linear-to-b from-white to-gray-50">
@@ -64,16 +96,22 @@ const CoverageMap = () => {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column - Location List */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-4 lg:col-span-1"
-          >
-            <h3 className="text-2xl font-bold mb-6">Popular Destinations</h3>
-            {dummyServiceCenters.map((location, index) => (
+        {destinations.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">📍</div>
+            <p className="text-xl text-gray-600">No destinations available yet.</p>
+          </div>
+        ) : (
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Left Column - Location List */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-4 lg:col-span-1"
+            >
+              <h3 className="text-2xl font-bold mb-6">Popular Destinations</h3>
+              {destinations.map((location, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -94,9 +132,6 @@ const CoverageMap = () => {
                       <FiMapPin className={`w-5 h-5 ${activeDistrict === location.district ? 'text-[#29AB87]' : 'text-gray-400'}`} />
                       <h4 className="text-xl font-bold">{location.district}</h4>
                     </div>
-                    <p className={`text-sm mb-2 ${activeDistrict === location.district ? 'text-white/80' : 'text-gray-600'}`}>
-                      {location.covered_area.join(", ")}
-                    </p>
                     <div className={`text-xs ${activeDistrict === location.district ? 'text-white/70' : 'text-gray-500'}`}>
                       {location.travelers} travelers visited
                     </div>
@@ -119,12 +154,10 @@ const CoverageMap = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               <FlyToDistrict coords={activeCoords} />
-              {dummyServiceCenters.map((center, index) => (
+              {destinations.map((center, index) => (
                 <Marker key={index} position={[center.latitude, center.longitude]} icon={customIcon}>
                   <Popup autoOpen={center.district === activeDistrict}>
                     <strong>{center.district}</strong>
-                    <br />
-                    {center.covered_area.join(", ")}
                     <br />
                     <span style={{ fontSize: '12px', color: '#666' }}>{center.travelers} travelers</span>
                   </Popup>
@@ -133,6 +166,7 @@ const CoverageMap = () => {
             </MapContainer>
           </motion.div>
         </div>
+        )}
       </div>
     </section>
   );
