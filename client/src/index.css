@@ -1,2 +1,47 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+/* Glassmorphism Utilities */
+@layer utilities {
+  .glass-light {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-medium {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-dark {
+    background: rgba(41, 171, 135, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(41, 171, 135, 0.3);
+  }
+
+  /* Gradient Backgrounds */
+  .gradient-teal-blue {
+    background: linear-gradient(135deg, #29AB87 0%, #4F46E5 100%);
+  }
+
+  .gradient-teal-purple {
+    background: linear-gradient(135deg, #29AB87 0%, #9333EA 100%);
+  }
+
+  .gradient-teal-cyan {
+    background: linear-gradient(135deg, #29AB87 0%, #06B6D4 100%);
+  }
+
+  .gradient-overlay-dark {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+  }
+
+  .gradient-overlay-light {
+    background: linear-gradient(to bottom, rgba(41, 171, 135, 0.2), rgba(41, 171, 135, 0.5));
+  }
+}

@@ -1,51 +1,39 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { FiCompass } from "react-icons/fi";
 import useAuth from "../../../hooks/useAuth";
 import useUserRole from "../../../hooks/useUserRole";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const [loading, setLoading] = useState(false);
-  const { role } = useUserRole(); // admin / tourGuide / tourist
+  const { role } = useUserRole();
+  const [hidden, setHidden] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious();
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
 
   const navLinkClass = ({ isActive }) =>
-    `px-4 py-2 rounded-lg transition-all duration-300 font-medium ${isActive
-      ? "bg-[#29AB87] text-white"
-      : "text-gray-700 hover:bg-primary/10 hover:text-success"
+    `px-4 py-2 font-medium transition-colors ${
+      isActive ? "text-black font-bold" : "text-gray-600 hover:text-black"
     }`;
 
   const navItems = (
     <>
-      <li>
-        <NavLink to="/" className={navLinkClass}>
-          Home
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/community" className={navLinkClass}>
-          Community
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/about" className={navLinkClass}>
-          About Us
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/trips" className={navLinkClass}>
-          Trips
-        </NavLink>
-      </li>
-
+      <li><NavLink to="/" className={navLinkClass}>Home</NavLink></li>
+      <li><NavLink to="/community" className={navLinkClass}>Community</NavLink></li>
+      <li><NavLink to="/about" className={navLinkClass}>About</NavLink></li>
+      <li><NavLink to="/trips" className={navLinkClass}>Trips</NavLink></li>
       {user && (
-        <li>
-          <NavLink
-            to={role === "admin" ? "/dashboard/profile" : role === "tourGuide" ? "/dashboard/profile" : "/dashboard/profile"}
-            className={navLinkClass}
-          >
-            Dashboard
-          </NavLink>
-        </li>
+        <li><NavLink to="/dashboard/profile" className={navLinkClass}>Dashboard</NavLink></li>
       )}
     </>
   );
@@ -62,88 +50,72 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-[#29AB8760] shadow-md ">
-      <div className="navbar w-11/12 mx-auto">
-        {/* Start: Logo & Mobile Menu */}
-        <div className="navbar-start">
-          <div className="dropdown">
-            <button tabIndex={0} className="btn btn-ghost lg:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 space-y-1"
-            >
-              {navItems}
-            </ul>
+    <motion.div
+      variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
+      animate={hidden ? "hidden" : "visible"}
+      transition={{ duration: 0.3 }}
+      className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm"
+    >
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-20">
+          {/* Logo */}
+          <NavLink to="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-xl flex items-center justify-center">
+              <FiCompass className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-2xl font-black">
+              WANDER<span className="text-[#29AB87]">BD</span>
+            </span>
+          </NavLink>
+
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex">
+            <ul className="flex items-center gap-2">{navItems}</ul>
+          </nav>
+
+          {/* Auth Section */}
+          <div className="flex items-center gap-4">
+            {user ? (
+              <>
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200">
+                  <img
+                    src={user.photoURL || "/default-avatar.png"}
+                    alt={user.displayName}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleLogout}
+                  className="px-6 py-2 bg-black text-white rounded-full font-bold"
+                  disabled={loading}
+                >
+                  {loading ? "..." : "Logout"}
+                </motion.button>
+              </>
+            ) : (
+              <NavLink to="/login">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-6 py-2 bg-black text-white rounded-full font-bold"
+                >
+                  Login
+                </motion.button>
+              </NavLink>
+            )}
           </div>
 
-          <NavLink
-            to="/"
-            className="btn btn-ghost text-xl font-bold flex items-center hover:bg-[#29AB8760]"
-          >
-            <img src="/logo.png" alt="Wander BD" className="w-8 h-8 mr-2" />
-            Wander BD
-          </NavLink>
-        </div>
-
-        {/* Center: Desktop Menu */}
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 gap-3">{navItems}</ul>
-        </div>
-
-        {/* End: Profile or Login */}
-        <div className="navbar-end flex items-center gap-3">
-          {user ? (
-            <>
-              {/* Profile Avatar with Tooltip */}
-              <div
-                className="tooltip tooltip-bottom"
-                data-tip={user.displayName || "User"}
-              >
-                <div className="avatar">
-                  <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 hover:ring-2 hover:ring-secondary transition-all duration-300">
-                    <img
-                      src={user.photoURL || "/default-avatar.png"}
-                      alt={user.displayName || "Profile"}
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Logout Button */}
-              <button
-                onClick={handleLogout}
-                className="btn btn-outline btn-sm md:btn-md bg-error transition-all duration-300"
-                disabled={loading}
-              >
-                {loading ? "Logging out..." : "Logout"}
-              </button>
-            </>
-          ) : (
-            <NavLink to="/login">
-              <button className="btn btn-primary bg-[#29AB87] border-none shadow-none btn-sm md:btn-md hover:bg-[#29AB87]/90 text-white transition-all duration-300">
-                Login
-              </button>
-            </NavLink>
-          )}
+          {/* Mobile Menu Button */}
+          <button className="lg:hidden p-2">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
