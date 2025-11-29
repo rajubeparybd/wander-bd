@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { NavLink } from "react-router-dom";
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 import { FiMail, FiPhone, FiMapPin, FiClock } from "react-icons/fi";
@@ -6,7 +7,7 @@ import { motion } from "framer-motion";
 const Footer = () => {
   return (
     <footer className="bg-black text-white pt-20 pb-8">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="w-11/12 mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand & Description */}
           <div className="lg:col-span-1">
