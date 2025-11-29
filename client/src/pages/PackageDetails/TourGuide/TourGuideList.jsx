@@ -35,15 +35,19 @@ const TourGuideList = ({ guides }) => {
           </motion.div>
           <div>
             <h2 className="text-4xl font-black">
-              Meet Your{" "}
+              {guides.length === 1 ? "Your " : "Meet Your "}
               <span className="bg-linear-to-r from-[#29AB87] to-[#06B6D4] bg-clip-text text-transparent">
-                Tour Guides
+                {guides.length === 1 ? "Tour Guide" : "Tour Guides"}
               </span>
             </h2>
-            <p className="text-gray-600 mt-1">Expert local guides ready to show you around</p>
+            <p className="text-gray-600 mt-1">
+              {guides.length === 1 
+                ? "Your assigned expert local guide for this tour" 
+                : "Expert local guides ready to show you around"}
+            </p>
           </div>
         </div>
-        <span className="text-gray-500 font-semibold">{guides.length} Guides</span>
+        {guides.length > 1 && <span className="text-gray-500 font-semibold">{guides.length} Guides</span>}
       </div>
 
       {/* Guides Grid */}

@@ -39,6 +39,11 @@ const addPackage = async (req, res) => {
         const packageData = req.body;
         const { packagesCollection } = getCollections();
 
+        // Validate required fields
+        if (!packageData.tourGuideId) {
+            return res.status(400).send({ message: "Tour guide is required" });
+        }
+
         const result = await packagesCollection.insertOne(packageData);
         res.send(result);
     } catch (error) {
@@ -153,6 +158,11 @@ const updatePackage = async (req, res) => {
 
         if (!ObjectId.isValid(id)) {
             return res.status(400).send({ message: "Invalid package ID format" });
+        }
+
+        // Validate required fields
+        if (!updateData.tourGuideId) {
+            return res.status(400).send({ message: "Tour guide is required" });
         }
 
         const { packagesCollection } = getCollections();

@@ -3,9 +3,22 @@ const { getCollections } = require('../config/database');
 
 const getAllTourGuides = async (req, res) => {
     try {
-        const { tourGuidesCollection } = getCollections();
-        const guides = await tourGuidesCollection.find().toArray();
-        res.send(guides);
+        const { tourGuidesCollection, usersCollection } = getCollections();
+        
+        // Fetch all tour guides from tourGuides collection
+        const guides = await tourGuidesCollection.find({}).toArray();
+        
+        // Cross-reference with users collection to ensure they still have tourGuide role
+        const validGuides = [];
+        for (const guide of guides) {
+            const user = await usersCollection.findOne({ email: guide.email });
+            // Only include guides whose corresponding user has tourGuide role
+            if (user && user.role === "tourGuide") {
+                validGuides.push(guide);
+            }
+        }
+        
+        res.send(validGuides);
     } catch (error) {
         console.error("Error fetching tour guides:", error);
         res.status(500).send({ message: "Server error" });

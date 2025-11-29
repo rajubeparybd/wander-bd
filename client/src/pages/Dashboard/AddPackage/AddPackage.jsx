@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -16,6 +16,7 @@ import {
   FiX,
   FiCheck,
   FiUpload,
+  FiUser,
 } from "react-icons/fi";
 
 const AddPackage = () => {
@@ -24,6 +25,16 @@ const AddPackage = () => {
   const axiosSecure = useAxiosSecure();
   const imgbbApiKey = import.meta.env.VITE_IMGBB_API_KEY;
   const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedGuideId, setSelectedGuideId] = useState("");
+
+  // Fetch tour guides
+  const { data: tourGuides = [], isLoading: guidesLoading } = useQuery({
+    queryKey: ["tourGuides"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/tour-guides");
+      return res.data;
+    },
+  });
 
   const selectedFiles = watch("images");
 
@@ -66,6 +77,7 @@ const AddPackage = () => {
         category: newPackage.category,
         itinerary: newPackage.itinerary,
         images: imageURLs,
+        tourGuideId: newPackage.tourGuideId || null,
         rating: 0,
         reviews: [],
         createdAt: new Date().toISOString(),
@@ -79,6 +91,7 @@ const AddPackage = () => {
       queryClient.invalidateQueries(["packages"]);
       reset();
       setSelectedImages([]);
+      setSelectedGuideId("");
     },
     onError: (error) => {
       toast.error("Failed to add package.");
@@ -93,11 +106,17 @@ const AddPackage = () => {
       return;
     }
 
+    if (!selectedGuideId) {
+      toast.error("Please select a tour guide.");
+      return;
+    }
+
     const packageData = {
       ...data,
       price: parseFloat(data.price),
       duration: parseInt(data.duration),
       images: files,
+      tourGuideId: selectedGuideId,
     };
 
     addPackageMutation.mutate(packageData);
@@ -301,6 +320,85 @@ const AddPackage = () => {
               placeholder="Day 1: Arrival and check-in&#10;Day 2: Sightseeing tour&#10;Day 3: Adventure activities..."
               className="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-[#29AB87] focus:outline-none transition-colors text-lg resize-none"
             ></textarea>
+          </div>
+
+          {/* Tour Guide Selection */}
+          <div>
+            <label className="flex items-center gap-2 text-lg font-bold mb-3">
+              <FiUser className="w-5 h-5 text-[#29AB87]" />
+              Select Tour Guide <span className="text-red-500">*</span>
+            </label>
+            {guidesLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-8 h-8 border-4 border-[#29AB87] border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {tourGuides.map((guide) => (
+                  <motion.div
+                    key={guide._id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setSelectedGuideId(guide._id === selectedGuideId ? "" : guide._id)}
+                    className={`relative cursor-pointer rounded-2xl border-2 transition-all overflow-hidden ${
+                      selectedGuideId === guide._id
+                        ? "border-[#29AB87] bg-[#29AB87]/5 shadow-lg"
+                        : "border-gray-200 hover:border-[#29AB87]/50"
+                    }`}
+                  >
+                    {/* Selected Checkmark */}
+                    {selectedGuideId === guide._id && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-2 right-2 w-8 h-8 bg-[#29AB87] rounded-full flex items-center justify-center z-10 shadow-lg"
+                      >
+                        <FiCheck className="w-5 h-5 text-white" />
+                      </motion.div>
+                    )}
+
+                    {/* Guide Image */}
+                    <div className="relative h-32 overflow-hidden">
+                      <img
+                        src={guide.photoURL || guide.image || "/default-avatar.png"}
+                        alt={guide.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+                    </div>
+
+                    {/* Guide Info */}
+                    <div className="p-4 space-y-2">
+                      <h4 className="font-bold text-gray-800 truncate">{guide.name}</h4>
+                      <p className="text-sm text-gray-600 truncate">
+                        {guide.experience || "Experienced Guide"}
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {guide.languages && Array.isArray(guide.languages) && guide.languages.slice(0, 2).map((lang, idx) => (
+                          <span
+                            key={idx}
+                            className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600"
+                          >
+                            {lang}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+            {!guidesLoading && tourGuides.length === 0 && (
+              <p className="text-red-500 text-center py-8 font-semibold">
+                No tour guides available. Please add tour guides first before creating packages.
+              </p>
+            )}
+            {selectedGuideId && (
+              <p className="text-sm text-[#29AB87] font-semibold mt-2 flex items-center gap-2">
+                <FiCheck className="w-4 h-4" />
+                Tour guide selected
+              </p>
+            )}
           </div>
 
           {/* Image Upload */}
