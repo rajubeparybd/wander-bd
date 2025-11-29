@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { Link } from "react-router-dom";
@@ -147,7 +148,7 @@ const TourismAndGuide = () => {
                 >
                   <TiltCard>
                     <Link to={`/package/${pkg._id}`} className="block">
-                      <div className="relative group overflow-hidden rounded-3xl bg-gradient-to-br from-white to-gray-50 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                      <div className="relative group overflow-hidden rounded-3xl bg-linear-to-br from-white to-gray-50 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
                         {/* Image with overlay */}
                         <div className="relative h-72 overflow-hidden">
                           <motion.img
@@ -158,13 +159,13 @@ const TourismAndGuide = () => {
                             className="w-full h-full object-cover"
                           />
                           {/* Gradient overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-500" />
+                          <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-500" />
                           
                           {/* Premium Badge */}
                           <div className="absolute top-4 left-4">
                             <motion.div
                               whileHover={{ scale: 1.1 }}
-                              className="px-4 py-2 bg-gradient-to-r from-[#29AB87] to-[#4F46E5] rounded-full shadow-lg"
+                              className="px-4 py-2 bg-linear-to-r from-[#29AB87] to-[#4F46E5] rounded-full shadow-lg"
                             >
                               <span className="text-white text-xs font-bold tracking-wide">PREMIUM</span>
                             </motion.div>
@@ -213,8 +214,8 @@ const TourismAndGuide = () => {
                         </div>
 
                         {/* Decorative elements */}
-                        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-all duration-700" />
-                        <div className="absolute -top-24 -left-24 w-48 h-48 bg-gradient-to-br from-[#4F46E5] to-[#9333EA] rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-700" />
+                        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-all duration-700" />
+                        <div className="absolute -top-24 -left-24 w-48 h-48 bg-linear-to-br from-[#4F46E5] to-[#9333EA] rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-700" />
                       </div>
                     </Link>
                   </TiltCard>
@@ -241,7 +242,7 @@ const TourismAndGuide = () => {
                 >
                   <TiltCard>
                     <Link to={`/guides/${guide._id}`} className="block">
-                      <div className="relative group overflow-hidden rounded-3xl bg-gradient-to-br from-white via-gray-50 to-white shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                      <div className="relative group overflow-hidden rounded-3xl bg-linear-to-br from-white via-gray-50 to-white shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
                         {/* Profile Image */}
                         <div className="relative h-80 overflow-hidden">
                           <motion.img
@@ -252,13 +253,13 @@ const TourismAndGuide = () => {
                             className="w-full h-full object-cover"
                           />
                           {/* Gradient overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-60 group-hover:opacity-70 transition-opacity duration-500" />
+                          <div className="absolute inset-0 bg-linear-to-t from-black via-black/30 to-transparent opacity-60 group-hover:opacity-70 transition-opacity duration-500" />
                           
                           {/* Expert Badge */}
                           <div className="absolute top-4 left-4">
                             <motion.div
                               whileHover={{ scale: 1.1, rotate: -5 }}
-                              className="px-4 py-2 bg-gradient-to-r from-[#4F46E5] to-[#9333EA] rounded-full shadow-lg"
+                              className="px-4 py-2 bg-linear-to-r from-[#4F46E5] to-[#9333EA] rounded-full shadow-lg"
                             >
                               <span className="text-white text-xs font-bold tracking-wide">EXPERT</span>
                             </motion.div>
@@ -291,7 +292,7 @@ const TourismAndGuide = () => {
                         <div className="p-6 bg-white space-y-3">
                           {/* Experience */}
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center flex-shrink-0">
+                            <div className="w-10 h-10 rounded-full bg-linear-to-br from-[#29AB87] to-[#4F46E5] flex items-center justify-center shrink-0">
                               <span className="text-white text-lg">⭐</span>
                             </div>
                             <div className="flex-1">
@@ -302,7 +303,7 @@ const TourismAndGuide = () => {
 
                           {/* Languages */}
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4F46E5] to-[#9333EA] flex items-center justify-center flex-shrink-0">
+                            <div className="w-10 h-10 rounded-full bg-linear-to-br from-[#4F46E5] to-[#9333EA] flex items-center justify-center shrink-0">
                               <span className="text-white text-lg">🌐</span>
                             </div>
                             <div className="flex-1">
@@ -324,8 +325,8 @@ const TourismAndGuide = () => {
                         </div>
 
                         {/* Decorative elements */}
-                        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-gradient-to-br from-[#4F46E5] to-[#9333EA] rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-all duration-700" />
-                        <div className="absolute -top-24 -left-24 w-48 h-48 bg-gradient-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-700" />
+                        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-linear-to-br from-[#4F46E5] to-[#9333EA] rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-all duration-700" />
+                        <div className="absolute -top-24 -left-24 w-48 h-48 bg-linear-to-br from-[#29AB87] to-[#4F46E5] rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-700" />
                       </div>
                     </Link>
                   </TiltCard>

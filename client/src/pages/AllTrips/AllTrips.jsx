@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -125,7 +126,7 @@ const AllTrips = () => {
             <div className="max-w-4xl mx-auto">
               <div className="flex flex-col md:flex-row gap-4">
                 {/* Search Bar */}
-                <div className="flex-grow relative">
+                <div className="grow relative">
                   <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     type="text"
@@ -257,12 +258,12 @@ const AllTrips = () => {
                       </div>
 
                       {/* Content */}
-                      <div className="p-6 flex-grow flex flex-col">
+                      <div className="p-6 grow flex flex-col">
                         <h3 className="text-xl font-bold mb-3 line-clamp-2 group-hover:text-[#29AB87] transition-colors">
                           {pkg.title}
                         </h3>
 
-                        <div className="space-y-2 mb-4 flex-grow">
+                        <div className="space-y-2 mb-4 grow">
                           <div className="flex items-center gap-2 text-gray-600">
                             <FiMapPin className="w-4 h-4 text-[#29AB87] shrink-0" />
                             <span className="text-sm truncate">{pkg.location || 'Bangladesh'}</span>
