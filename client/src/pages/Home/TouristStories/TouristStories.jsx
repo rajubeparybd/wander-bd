@@ -60,6 +60,7 @@ const TouristStories = () => {
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -10, scale: 1.02 }}
               className="group cursor-pointer"
+              onClick={() => user && navigate(`/story/${story._id}`)}
             >
               <div className="relative bg-linear-to-br from-white via-gray-50 to-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden h-full flex flex-col">
                 {/* Image */}
@@ -78,6 +79,7 @@ const TouristStories = () => {
                     <FacebookShareButton
                       url={`https://wanderbd.com/story/${story._id}`}
                       className="absolute top-4 right-4 z-10"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <motion.div
                         whileHover={{ scale: 1.15, rotate: 10 }}
@@ -137,7 +139,10 @@ const TouristStories = () => {
                     {!user ? (
                       <motion.button
                         whileHover={{ scale: 1.05 }}
-                        onClick={() => navigate("/login")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate("/login");
+                        }}
                         className="px-4 py-2 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white rounded-full font-bold text-xs shadow-lg hover:shadow-xl transition-all"
                       >
                         Login
@@ -145,6 +150,7 @@ const TouristStories = () => {
                     ) : (
                       <motion.div
                         whileHover={{ x: 5, scale: 1.05 }}
+                        onClick={() => navigate(`/story/${story._id}`)}
                         className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#29AB87] to-[#4F46E5] text-white rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-all"
                       >
                         <span>Read</span>
