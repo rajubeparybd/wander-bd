@@ -6,10 +6,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FiCalendar, FiUser, FiMail, FiDollarSign, FiCheck } from "react-icons/fi";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const BookingForm = ({ price, packageName, user, guides }) => {
   const axiosSecure = useAxiosSecure();
-
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -46,6 +47,7 @@ const BookingForm = ({ price, packageName, user, guides }) => {
       if (res.data.insertedId || res.data.acknowledged) {
         toast.success("Booking successful!");
         reset();
+        navigate("/dashboard/my-bookings");
       } else {
         toast.error("Booking failed. Please try again.");
       }

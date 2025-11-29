@@ -7,6 +7,11 @@ const app = express();
 
 // Middlewares
 app.use(corsMiddleware);
+
+// Stripe webhook needs raw body, so we handle it before JSON parsing
+app.post('/payments/webhook', express.raw({ type: 'application/json' }), require('./controllers/payment.controller').handleWebhook);
+
+// JSON parsing for all other routes
 app.use(express.json());
 
 // Routes

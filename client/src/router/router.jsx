@@ -29,6 +29,8 @@ import AddStory from "../pages/Dashboard/AddStory/AddStory";
 import ManageStories from "../pages/Dashboard/ManageStories/ManageStories";
 import EditStory from "../pages/Dashboard/ManageStories/EditStory";
 import Payment from "../pages/Dashboard/Payment/Payment";
+import PaymentSuccess from "../pages/PaymentSuccess/PaymentSuccess";
+import PaymentCancel from "../pages/PaymentCancel/PaymentCancel";
 
 // Dashboard Pages
 
@@ -58,6 +60,8 @@ export const router = createBrowserRouter([
       { path: "about", element: <AboutUs /> },
       { path: "trips", element: <AllTrips /> },
       { path: "guides/:id", element: <TourGuideProfile /> },
+      { path: "payment-success", element: <PaymentSuccess /> },
+      { path: "payment-cancel", element: <PaymentCancel /> },
     ],
   },
   {
