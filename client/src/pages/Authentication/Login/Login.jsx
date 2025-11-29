@@ -45,12 +45,13 @@ const Login = () => {
             placeholder="Password"
             className="input input-bordered w-full pr-10"
           />
-          <span
+          <button
+            type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 z-10"
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </span>
+          </button>
         </div>
 
         {/* Submit Button */}
