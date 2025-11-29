@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Spinner } from "@material-tailwind/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -20,7 +20,8 @@ import {
 import useAuth from "../hooks/useAuth";
 
 const DashboardLayout = () => {
-  const { user, loading, logOut } = useAuth();
+  const { user, loading, logout } = useAuth();
+  const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 console.log(user);
   if (loading) {
@@ -45,6 +46,15 @@ console.log(user);
   ];
 
   const filteredLinks = navLinks.filter(link => link.roles.includes(user.role));
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50 relative overflow-hidden">
@@ -150,7 +160,7 @@ console.log(user);
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                onClick={logOut}
+                onClick={handleLogout}
                 className="w-full mt-8 flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-red-600 hover:bg-red-50 transition-all"
               >
                 <FiLogOut className="w-5 h-5" />
