@@ -57,19 +57,10 @@ const PackageDetailsPage = () => {
     queryKey: ["tourGuide", tourPackage?.tourGuideId],
     enabled: !!tourPackage?.tourGuideId,
     queryFn: async () => {
-      console.log("Fetching tour guide with ID:", tourPackage.tourGuideId);
       const res = await axiosSecure.get(`/tour-guides/${tourPackage.tourGuideId}`);
-      console.log("Tour guide data:", res.data);
       return res.data;
     },
   });
-
-  // Debug logging
-  console.log("Package data:", tourPackage);
-  console.log("Tour Guide ID:", tourPackage?.tourGuideId);
-  console.log("Assigned Guide:", assignedGuide);
-  console.log("Guide Loading:", guideLoading);
-  console.log("Guide Error:", guideError);
 
   // Fetch all tour guides for booking form (fallback)
   const {

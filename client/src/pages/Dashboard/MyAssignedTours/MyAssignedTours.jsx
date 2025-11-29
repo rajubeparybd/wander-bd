@@ -60,6 +60,30 @@ const MyAssignedTours = () => {
     }
   };
 
+  const getPaymentBadgeClass = (paymentStatus) => {
+    return paymentStatus === "paid" ? "badge badge-success" : "badge badge-warning";
+  };
+
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case "Pending":
+        return "badge badge-warning";
+      case "In Review":
+        return "badge badge-info";
+      case "Accepted":
+        return "badge badge-success";
+      case "Rejected":
+        return "badge badge-error";
+      default:
+        return "badge";
+    }
+  };
+
+  // Tour guides can only accept/reject unpaid bookings (status: "In Review" and paymentStatus: "pending")
+  const canAcceptReject = (tour) => {
+    return tour.status === "In Review" && tour.paymentStatus !== "paid";
+  };
+
   return (
     <div className="p-6 overflow-x-auto">
       <h2 className="text-2xl font-bold mb-4">My Assigned Tours</h2>
@@ -67,16 +91,16 @@ const MyAssignedTours = () => {
       {isLoading ? (
         <p>Loading tours...</p>
       ) : (
-        <table className="table w-full border bg-[#29AB8760]">
-          <thead className="bg-[#29AB8790]">
+        <table className="table w-full border">
+          <thead>
             <tr>
               <th>#</th>
               <th>Package</th>
               <th>Tourist</th>
               <th>Tour Date</th>
               <th>Price</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th className="text-center">Payment</th>
+              <th className="text-center">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -87,24 +111,15 @@ const MyAssignedTours = () => {
                 <td>{tour.touristName}</td>
                 <td>{new Date(tour.tourDate).toLocaleDateString()}</td>
                 <td>${tour.price}</td>
-                <td>{tour.status}</td>
-                <td className="space-x-2">
-                  <button
-                    disabled={tour.status !== "In Review"}
-                    onClick={() => acceptTourMutation.mutate(tour._id)}
-                    className={`btn btn-success btn-sm ${tour.status !== "In Review" ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                  >
-                    Accept
-                  </button>
-                  {tour.status === "In Review" && (
-                    <button
-                      onClick={() => openRejectModal(tour)}
-                      className="btn btn-error btn-sm"
-                    >
-                      Reject
-                    </button>
-                  )}
+                <td className="text-center">
+                  <span className={getPaymentBadgeClass(tour.paymentStatus)}>
+                    {tour.paymentStatus === "paid" ? "Paid" : "Pending"}
+                  </span>
+                </td>
+                <td className="text-center">
+                  <span className={getStatusBadgeClass(tour.status)}>
+                    {tour.status}
+                  </span>
                 </td>
               </tr>
             ))}

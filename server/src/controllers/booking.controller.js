@@ -76,16 +76,56 @@ const getAllBookings = async (req, res) => {
     try {
         const { bookingsCollection, paymentsCollection } = getCollections();
 
-        // Fetch all bookings
-        const bookings = await bookingsCollection.find().toArray();
+        // Parse and validate pagination parameters
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || parseInt(req.query.limit) || 10;
+        const skip = parseInt(req.query.skip) || (page - 1) * pageSize;
 
-        // Fetch all payments
-        const payments = await paymentsCollection.find().toArray();
+        // Validate pagination params
+        if (page < 1 || pageSize < 1 || skip < 0) {
+            return res.status(400).send({ message: "Invalid pagination parameters" });
+        }
+
+        // Enforce max page size
+        const validatedPageSize = Math.min(pageSize, 100);
+
+        // Build query filters from req.query
+        const filter = {};
+        if (req.query.status) {
+            filter.status = req.query.status;
+        }
+        if (req.query.touristEmail) {
+            filter.touristEmail = req.query.touristEmail;
+        }
+        if (req.query.tourGuideEmail) {
+            filter.tourGuideEmail = req.query.tourGuideEmail;
+        }
+        if (req.query.packageId) {
+            filter.packageId = req.query.packageId;
+        }
+
+        // Get total count for pagination metadata
+        const totalCount = await bookingsCollection.countDocuments(filter);
+
+        // Fetch paginated bookings
+        const bookings = await bookingsCollection
+            .find(filter)
+            .skip(skip)
+            .limit(validatedPageSize)
+            .toArray();
+
+        // Extract booking IDs for payment lookup
+        const bookingIds = bookings.map(booking => booking._id.toString());
+
+        // Fetch payments only for the returned bookings
+        const payments = await paymentsCollection
+            .find({ bookingId: { $in: bookingIds } })
+            .toArray();
 
         // Create a map of bookingId to payment status
         const paymentMap = new Map();
         payments.forEach(payment => {
-            paymentMap.set(payment.bookingId, payment.paymentStatus || 'paid');
+            paymentMap.set(payment.bookingId, payment.paymentStatus);
         });
 
         // Merge booking data with payment status
@@ -94,7 +134,18 @@ const getAllBookings = async (req, res) => {
             paymentStatus: booking.paymentStatus || paymentMap.get(booking._id.toString()) || 'pending'
         }));
 
-        res.send(bookingsWithPayment);
+        // Send paginated response with metadata
+        res.send({
+            data: bookingsWithPayment,
+            pagination: {
+                page,
+                pageSize: validatedPageSize,
+                totalCount,
+                totalPages: Math.ceil(totalCount / validatedPageSize),
+                hasNextPage: skip + validatedPageSize < totalCount,
+                hasPreviousPage: page > 1
+            }
+        });
     } catch (error) {
         console.error("Error fetching all bookings:", error);
         res.status(500).send({ message: "Server error" });

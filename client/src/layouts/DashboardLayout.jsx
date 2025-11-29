@@ -48,8 +48,7 @@ const DashboardLayout = () => {
     { to: "/dashboard/manage-candidates", icon: FiUserPlus, label: "Manage Candidates", roles: ["admin"] },
   ];
 
-  const filteredLinks = navLinks.filter(link => link.roles.includes(user.role));
-
+  const filteredLinks = navLinks.filter(link => link.roles.includes(user?.role));
   const handleLogout = async () => {
     try {
       await logout();

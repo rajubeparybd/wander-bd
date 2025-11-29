@@ -12,14 +12,24 @@ const addOrUpdateUser = async (req, res) => {
 
         if (existingUser) {
             // User exists - only update fields that should be updated, preserve role
-            const updateDoc = {
-                $set: {
-                    name: userData.name,
-                    photo: userData.photo,
-                }
-            };
-            const result = await usersCollection.updateOne(filter, updateDoc);
-            res.send(result);
+            const $set = {};
+            
+            if (userData.hasOwnProperty('name') && userData.name !== undefined) {
+                $set.name = userData.name;
+            }
+            
+            if (userData.hasOwnProperty('photo') && userData.photo !== undefined) {
+                $set.photo = userData.photo;
+            }
+            
+            // Only update if there are fields to update
+            if (Object.keys($set).length > 0) {
+                const result = await usersCollection.updateOne(filter, { $set });
+                res.send(result);
+            } else {
+                // No fields to update, return existing user
+                res.send({ acknowledged: true, matchedCount: 1, modifiedCount: 0 });
+            }
         } else {
             // New user - insert with default role
             const newUser = {
@@ -93,10 +103,6 @@ const updateUserRole = async (req, res) => {
         const id = req.params.id;
         const { role } = req.body;
         const { usersCollection } = getCollections();
-
-        if (!role || !["tourist", "tourGuide", "admin"].includes(role)) {
-          return res.status(400).send({ message: "Invalid role" });
-        }
 
         const result = await usersCollection.updateOne(
             { _id: new ObjectId(id) },

@@ -93,7 +93,7 @@ const Login = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
               Email Address
             </label>
             <div className="relative">
@@ -101,6 +101,7 @@ const Login = () => {
                 <FiMail className="w-5 h-5" />
               </div>
               <input
+                id="email"
                 type="email"
                 {...register("email", { required: "Email is required" })}
                 placeholder="your@email.com"
@@ -118,7 +119,7 @@ const Login = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
               Password
             </label>
             <div className="relative">
@@ -126,6 +127,7 @@ const Login = () => {
                 <FiLock className="w-5 h-5" />
               </div>
               <input
+                id="password"
                 type={showPassword ? "text" : "password"}
                 {...register("password", { required: "Password is required" })}
                 placeholder="Enter your password"

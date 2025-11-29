@@ -15,6 +15,7 @@ const EditStory = () => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
   const [newImages, setNewImages] = useState([]);
   const [imageUploading, setImageUploading] = useState(false);
+  const [removingImageUrl, setRemovingImageUrl] = useState(null);
 
   // Fetch story
   const { data: story, isLoading } = useQuery({
@@ -32,7 +33,26 @@ const EditStory = () => {
   // Remove image mutation
   const removeImageMutation = useMutation({
     mutationFn: (imgUrl) => axios.put(`/stories/${id}/remove-image`, { image: imgUrl }),
-    onSuccess: () => queryClient.invalidateQueries(["story", id]),
+    onMutate: (imgUrl) => {
+      setRemovingImageUrl(imgUrl);
+      toast.loading("Removing image...", { id: "remove-image" });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["story", id]);
+      toast.success("Image removed successfully!", { id: "remove-image" });
+      setRemovingImageUrl(null);
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || "Failed to remove image. Please try again.";
+      toast.error(errorMessage, { id: "remove-image" });
+      Swal.fire({
+        title: "Error!",
+        text: errorMessage,
+        icon: "error",
+        confirmButtonColor: "#3b82f6",
+      });
+      setRemovingImageUrl(null);
+    },
   });
 
   const handleRemoveImage = async (img) => {
@@ -135,9 +155,10 @@ const EditStory = () => {
                 <button
                   type="button"
                   onClick={() => handleRemoveImage(img)}
-                  className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded"
+                  disabled={removingImageUrl === img}
+                  className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Remove
+                  {removingImageUrl === img ? "Removing..." : "Remove"}
                 </button>
               </div>
             ))}

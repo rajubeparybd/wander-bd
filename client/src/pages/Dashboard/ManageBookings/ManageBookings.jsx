@@ -30,7 +30,7 @@ const ManageBookings = () => {
     queryKey: ["allBookings"],
     queryFn: async () => {
       const res = await axiosSecure.get("/bookings/all");
-      return res.data;
+      return res.data.data || res.data;
     },
   });
 

@@ -3,20 +3,35 @@ const { getCollections } = require('../config/database');
 
 const getAllTourGuides = async (req, res) => {
     try {
-        const { tourGuidesCollection, usersCollection } = getCollections();
+        const { tourGuidesCollection } = getCollections();
         
-        // Fetch all tour guides from tourGuides collection
-        const guides = await tourGuidesCollection.find({}).toArray();
-        
-        // Cross-reference with users collection to ensure they still have tourGuide role
-        const validGuides = [];
-        for (const guide of guides) {
-            const user = await usersCollection.findOne({ email: guide.email });
-            // Only include guides whose corresponding user has tourGuide role
-            if (user && user.role === "tourGuide") {
-                validGuides.push(guide);
+        // Use aggregation with $lookup to join users and filter by role in a single query
+        const validGuides = await tourGuidesCollection.aggregate([
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "email",
+                    foreignField: "email",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$user",
+                    preserveNullAndEmptyArrays: false
+                }
+            },
+            {
+                $match: {
+                    "user.role": "tourGuide"
+                }
+            },
+            {
+                $project: {
+                    user: 0
+                }
             }
-        }
+        ]).toArray();
         
         res.send(validGuides);
     } catch (error) {

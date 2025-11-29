@@ -2,6 +2,16 @@ const { ObjectId } = require('mongodb');
 const { getCollections } = require('../config/database');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+/**
+ * Validates if a string is a valid MongoDB ObjectId
+ * @param {string} id - The ID to validate
+ * @returns {boolean} - True if valid, false otherwise
+ */
+const isValidObjectId = (id) => {
+    if (!id || typeof id !== 'string') return false;
+    return ObjectId.isValid(id) && /^[0-9a-fA-F]{24}$/.test(id);
+};
+
 const createCheckoutSession = async (req, res) => {
     try {
         const { bookingId, customerEmail } = req.body;
@@ -10,6 +20,13 @@ const createCheckoutSession = async (req, res) => {
             return res.status(400).send({ 
                 error: "Booking ID is required",
                 message: "Please provide a valid booking ID" 
+            });
+        }
+
+        if (!isValidObjectId(bookingId)) {
+            return res.status(400).send({ 
+                error: "Invalid Booking ID",
+                message: "Booking ID must be a valid 24-character hexadecimal string" 
             });
         }
 
@@ -34,7 +51,14 @@ const createCheckoutSession = async (req, res) => {
             });
         }
 
-        const amount = parseInt(booking.price) * 100; // Convert to cents
+        const amount = parseInt(booking.price, 10) * 100; // Convert to cents
+        
+        if (isNaN(amount) || amount <= 0) {
+            return res.status(400).send({ 
+                error: "Invalid booking price",
+                message: "Booking has an invalid or missing price" 
+            });
+        }
 
         // Get client URL with fallback
         const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
@@ -86,20 +110,31 @@ const createCheckoutSession = async (req, res) => {
 const handleWebhook = async (req, res) => {
     const sig = req.headers['stripe-signature'];
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    const isDev = process.env.NODE_ENV !== 'production';
 
-    console.log('=== Received Stripe Webhook ===');
-    console.log('Signature present:', !!sig);
-    console.log('Endpoint secret configured:', !!endpointSecret);
+    // Guard: Check if webhook secret is configured
+    if (!endpointSecret) {
+        console.error('Webhook secret not configured');
+        return res.status(500).send({ 
+            error: "Webhook configuration error",
+            message: "Server is not properly configured to handle webhooks" 
+        });
+    }
+
+    if (isDev) {
+        console.log('Received Stripe webhook');
+    }
 
     let event;
 
     try {
         // Verify webhook signature
         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-        console.log('✓ Webhook signature verified');
-        console.log('Event type:', event.type);
+        if (isDev) {
+            console.log('Webhook verified, type:', event.type);
+        }
     } catch (err) {
-        console.error('❌ Webhook signature verification failed:', err.message);
+        console.error('Webhook verification failed:', err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
@@ -107,46 +142,49 @@ const handleWebhook = async (req, res) => {
     try {
         switch (event.type) {
             case 'checkout.session.completed':
-                console.log('Processing checkout.session.completed event...');
+                if (isDev) {
+                    console.log('Processing checkout.session.completed');
+                }
                 await handleCheckoutSessionCompleted(event.data.object);
-                console.log('✅ checkout.session.completed processed successfully');
                 break;
             case 'payment_intent.succeeded':
-                console.log('✓ PaymentIntent succeeded:', event.data.object.id);
+                if (isDev) {
+                    console.log('PaymentIntent succeeded:', event.data.object.id);
+                }
                 break;
             case 'payment_intent.payment_failed':
-                console.log('❌ PaymentIntent failed:', event.data.object.id);
+                console.error('PaymentIntent failed:', event.data.object.id);
                 break;
             default:
-                console.log(`ℹ️ Unhandled event type: ${event.type}`);
+                if (isDev) {
+                    console.log('Unhandled event type:', event.type);
+                }
         }
 
         res.json({ received: true });
     } catch (error) {
-        console.error('❌ Error handling webhook:', error);
-        console.error('Error details:', {
-            message: error.message,
-            stack: error.stack,
-            eventType: event?.type
-        });
+        console.error('Error handling webhook:', error.message);
+        if (isDev) {
+            console.error('Stack:', error.stack);
+        }
         res.status(500).send({ error: 'Webhook handler failed' });
     }
 };
 
 const handleCheckoutSessionCompleted = async (session) => {
     const { paymentsCollection, bookingsCollection } = getCollections();
+    const isDev = process.env.NODE_ENV !== 'production';
     
     const bookingId = session.client_reference_id || session.metadata.bookingId;
     
-    console.log('=== Webhook: Checkout Session Completed ===');
-    console.log('Session ID:', session.id);
-    console.log('Booking ID:', bookingId);
-    console.log('Payment Status:', session.payment_status);
-    console.log('Amount Total:', session.amount_total);
-    
     if (!bookingId) {
-        console.error('❌ No booking ID found in session');
+        console.error('No booking ID in session');
         return;
+    }
+
+    if (!isValidObjectId(bookingId)) {
+        console.error('Invalid booking ID format:', bookingId);
+        throw new Error(`Invalid booking ID format: ${bookingId}`);
     }
 
     try {
@@ -156,12 +194,31 @@ const handleCheckoutSessionCompleted = async (session) => {
         });
 
         if (!existingBooking) {
-            console.error('❌ Booking not found:', bookingId);
+            console.error('Booking not found:', bookingId);
             throw new Error(`Booking ${bookingId} not found`);
         }
 
-        console.log('✓ Booking found:', existingBooking.packageName);
-        console.log('✓ Current booking status:', existingBooking.status);
+        if (isDev) {
+            console.log('Processing payment for:', existingBooking.packageName);
+        }
+
+        // Idempotency check: Check if payment already exists
+        const paymentIntentId = session.payment_intent;
+        const sessionId = session.id;
+        
+        const existingPayment = await paymentsCollection.findOne({
+            $or: [
+                { paymentIntentId: paymentIntentId },
+                { sessionId: sessionId }
+            ]
+        });
+
+        if (existingPayment) {
+            if (isDev) {
+                console.log('Payment already exists, skipping duplicate');
+            }
+            return;
+        }
 
         // Save payment record
         const paymentData = {
@@ -177,8 +234,7 @@ const handleCheckoutSessionCompleted = async (session) => {
             metadata: session.metadata,
         };
 
-        const paymentResult = await paymentsCollection.insertOne(paymentData);
-        console.log('✓ Payment saved with ID:', paymentResult.insertedId);
+        await paymentsCollection.insertOne(paymentData);
 
         // Update booking status
         const updateResult = await bookingsCollection.updateOne(
@@ -194,32 +250,19 @@ const handleCheckoutSessionCompleted = async (session) => {
             }
         );
 
-        console.log('✓ Booking update result:', {
-            matched: updateResult.matchedCount,
-            modified: updateResult.modifiedCount,
-            acknowledged: updateResult.acknowledged
-        });
-
         if (updateResult.modifiedCount === 0) {
-            console.warn('⚠️ Booking was not modified. It may already be updated.');
-        } else {
-            console.log('✅ Booking status successfully updated to "In Review"');
+            console.warn('Booking not modified, may already be updated');
         }
 
-        // Verify the update
-        const updatedBooking = await bookingsCollection.findOne({ 
-            _id: new ObjectId(bookingId) 
-        });
-        console.log('✓ Verified booking status:', updatedBooking.status);
-        console.log('=== Webhook Processing Complete ===');
+        if (isDev) {
+            console.log('Payment processed successfully for booking:', bookingId);
+        }
 
     } catch (error) {
-        console.error('❌ Error in handleCheckoutSessionCompleted:', error);
-        console.error('Error details:', {
-            message: error.message,
-            stack: error.stack,
-            bookingId: bookingId
-        });
+        console.error('Error processing payment:', error.message);
+        if (isDev) {
+            console.error('Stack:', error.stack);
+        }
         throw error;
     }
 };

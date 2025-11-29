@@ -160,9 +160,9 @@ const updatePackage = async (req, res) => {
             return res.status(400).send({ message: "Invalid package ID format" });
         }
 
-        // Validate required fields
-        if (!updateData.tourGuideId) {
-            return res.status(400).send({ message: "Tour guide is required" });
+        // Validate tourGuideId format if present
+        if (updateData.tourGuideId && !ObjectId.isValid(updateData.tourGuideId)) {
+            return res.status(400).send({ message: "Invalid tour guide ID format" });
         }
 
         const { packagesCollection } = getCollections();
@@ -191,8 +191,19 @@ const deletePackage = async (req, res) => {
             return res.status(400).send({ message: "Invalid package ID format" });
         }
 
-        const { packagesCollection } = getCollections();
+        const { packagesCollection, bookingsCollection } = getCollections();
         
+        // Check for related bookings
+        const relatedBookingsCount = await bookingsCollection.countDocuments({ 
+            packageId: new ObjectId(id) 
+        });
+
+        if (relatedBookingsCount > 0) {
+            return res.status(409).send({ 
+                message: "Cannot delete package with existing bookings" 
+            });
+        }
+
         const result = await packagesCollection.deleteOne({ _id: new ObjectId(id) });
 
         if (result.deletedCount === 0) {

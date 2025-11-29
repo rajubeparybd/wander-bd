@@ -18,6 +18,7 @@ import {
   FiUpload,
   FiUser,
 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const AddPackage = () => {
   const { register, handleSubmit, reset, watch, formState: { errors } } = useForm();
@@ -26,13 +27,23 @@ const AddPackage = () => {
   const imgbbApiKey = import.meta.env.VITE_IMGBB_API_KEY;
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedGuideId, setSelectedGuideId] = useState("");
+  const navigate = useNavigate(); 
 
   // Fetch tour guides
-  const { data: tourGuides = [], isLoading: guidesLoading } = useQuery({
+  const { 
+    data: tourGuides = [], 
+    isLoading: guidesLoading,
+    isError: guidesError,
+    error: guidesErrorData
+  } = useQuery({
     queryKey: ["tourGuides"],
     queryFn: async () => {
       const res = await axiosSecure.get("/tour-guides");
       return res.data;
+    },
+    onError: (error) => {
+      console.error("Failed to fetch tour guides:", error);
+      toast.error("Failed to load tour guides. Please try again.");
     },
   });
 
@@ -92,6 +103,7 @@ const AddPackage = () => {
       reset();
       setSelectedImages([]);
       setSelectedGuideId("");
+      navigate("/dashboard/manage-packages");
     },
     onError: (error) => {
       toast.error("Failed to add package.");
@@ -332,6 +344,20 @@ const AddPackage = () => {
               <div className="flex items-center justify-center py-8">
                 <div className="w-8 h-8 border-4 border-[#29AB87] border-t-transparent rounded-full animate-spin" />
               </div>
+            ) : guidesError ? (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-red-50 border-2 border-red-200 rounded-2xl p-6 text-center"
+              >
+                <div className="flex items-center justify-center gap-2 text-red-600 mb-2">
+                  <FiX className="w-5 h-5" />
+                  <p className="font-bold text-lg">Failed to Load Tour Guides</p>
+                </div>
+                <p className="text-red-500 text-sm">
+                  {guidesErrorData?.message || "An error occurred while fetching tour guides. Please try again later."}
+                </p>
+              </motion.div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {tourGuides.map((guide) => (
@@ -388,7 +414,7 @@ const AddPackage = () => {
                 ))}
               </div>
             )}
-            {!guidesLoading && tourGuides.length === 0 && (
+            {!guidesLoading && !guidesError && tourGuides.length === 0 && (
               <p className="text-red-500 text-center py-8 font-semibold">
                 No tour guides available. Please add tour guides first before creating packages.
               </p>

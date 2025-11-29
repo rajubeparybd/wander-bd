@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 const StoryCard = ({ story }) => {
   const navigate = useNavigate();
-  const shareUrl = `https://wanderbd.com/story/${story._id}`;
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+  const shareUrl = `${baseUrl}/story/${story._id}`;
 
   const handleReadMore = () => {
     navigate(`/story/${story._id}`);
